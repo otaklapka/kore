@@ -18,7 +18,7 @@ jobs:
           - x86_64-pc-windows-msvc      # Windows
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Deno
         uses: denoland/setup-deno@v2
@@ -34,7 +34,7 @@ jobs:
             ./src/main.ts
 
       - name: Upload Artifact for ${{ matrix.target }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kore-${{ matrix.target }}
           path: kore-${{ matrix.target }}
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download All Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Extract Version Number
         run: echo "RELEASE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
