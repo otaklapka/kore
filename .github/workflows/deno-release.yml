@@ -33,11 +33,15 @@ jobs:
             --output kore-${{ matrix.target }} \
             ./src/main.ts
 
-      - name: Upload Artifact for ${{ matrix.target }}
+      - name: Zip the Binary
+        run: |
+          zip -j cli-${{ matrix.target }}.zip kore-${{ matrix.target }}
+
+      - name: Upload Zipped Artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
         with:
-          name: kore-${{ matrix.target }}
-          path: kore-${{ matrix.target }}
+          name: kore-${{ matrix.target }}.zip
+          path: kore-${{ matrix.target }}.zip
 
   release:
     name: Release Binaries
@@ -56,6 +60,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            kore-*/kore-*
+            kore-*/kore-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
