@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "start": "deno run --allow-read src/main.ts -v './tests/data/test.yaml' './tests/data/test1.yaml' './tests/data/test2.yaml'"
+  },
+  "imports": {
+    "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
+    "@cliffy/table": "jsr:@cliffy/table@^1.0.0-rc.7",
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/fmt": "jsr:@std/fmt@^1.0.5",
+    "@std/yaml": "jsr:@std/yaml@^1.0.5"
+  }
+}

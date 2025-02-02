@@ -1,0 +1,59 @@
+name: Deno Compile and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers the workflow when a tag starting with 'v' is pushed
+
+jobs:
+  build:
+    name: Build Deno CLI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu    # Linux
+          - x86_64-apple-darwin         # macOS Intel
+          - aarch64-apple-darwin        # macOS ARM
+          - x86_64-pc-windows-msvc      # Windows
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x  # Use Deno v2
+
+      - name: Compile Deno CLI for ${{ matrix.target }}
+        run: |
+          deno compile \
+            --allow-read \
+            --target ${{ matrix.target }} \
+            --output kore-${{ matrix.target }} \
+            ./src/main.ts
+
+      - name: Upload Artifact for ${{ matrix.target }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: kore-${{ matrix.target }}
+          path: kore-${{ matrix.target }}
+
+  release:
+    name: Release Binaries
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Extract Version Number
+        run: echo "RELEASE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            kore-*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
