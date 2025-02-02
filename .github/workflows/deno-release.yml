@@ -54,6 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            kore-*
+            ./kore-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
