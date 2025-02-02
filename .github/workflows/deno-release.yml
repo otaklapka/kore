@@ -30,18 +30,18 @@ jobs:
           deno compile \
             --allow-read \
             --target ${{ matrix.target }} \
-            --output kore-${{ github.ref_name }}-${{ matrix.target }} \
+            --output kore_${{ github.ref_name }}_${{ matrix.target }} \
             ./src/main.ts
 
       - name: Zip the Binary
         run: |
-          zip -j kore-${{ github.ref_name }}-${{ matrix.target }}.zip kore-${{ github.ref_name }}-${{ matrix.target }}*
+          zip -j kore_${{ github.ref_name }}_${{ matrix.target }}.zip kore_${{ github.ref_name }}_${{ matrix.target }}*
 
       - name: Upload Zipped Artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
         with:
-          name: kore-${{ github.ref_name }}-${{ matrix.target }}.zip
-          path: kore-${{ github.ref_name }}-${{ matrix.target }}.zip
+          name: kore_${{ github.ref_name }}_${{ matrix.target }}.zip
+          path: kore_${{ github.ref_name }}_${{ matrix.target }}.zip
 
   release:
     name: Release Binaries
@@ -57,6 +57,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            kore-*/kore-*.zip
+            kore_*/kore_*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
