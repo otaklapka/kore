@@ -35,7 +35,7 @@ jobs:
 
       - name: Zip the Binary
         run: |
-          zip -j cli-${{ matrix.target }}.zip kore-${{ matrix.target }}
+          zip -j kore-${{ matrix.target }}.zip kore-${{ matrix.target }}*
 
       - name: Upload Zipped Artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
