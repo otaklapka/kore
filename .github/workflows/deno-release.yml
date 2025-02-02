@@ -30,7 +30,7 @@ jobs:
           deno compile \
             --allow-read \
             --target ${{ matrix.target }} \
-            --output kore-${{ GITHUB_REF_NAME }}-${{ matrix.target }} \
+            --output kore-${{ github.ref_name }}-${{ matrix.target }} \
             ./src/main.ts
 
       - name: Zip the Binary
