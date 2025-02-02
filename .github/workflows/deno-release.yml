@@ -30,18 +30,18 @@ jobs:
           deno compile \
             --allow-read \
             --target ${{ matrix.target }} \
-            --output kore-${{ env.RELEASE_TAG }}-${{ matrix.target }} \
+            --output kore-${{ GITHUB_REF_NAME }}-${{ matrix.target }} \
             ./src/main.ts
 
       - name: Zip the Binary
         run: |
-          zip -j kore-${{ env.RELEASE_TAG }}-${{ matrix.target }}.zip kore-${{ env.RELEASE_TAG }}-${{ matrix.target }}*
+          zip -j kore-${{ github.ref_name }}-${{ matrix.target }}.zip kore-${{ github.ref_name }}-${{ matrix.target }}*
 
       - name: Upload Zipped Artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
         with:
-          name: kore-${{ env.RELEASE_TAG }}-${{ matrix.target }}.zip
-          path: kore-${{ env.RELEASE_TAG }}-${{ matrix.target }}.zip
+          name: kore-${{ github.ref_name }}-${{ matrix.target }}.zip
+          path: kore-${{ github.ref_name }}-${{ matrix.target }}.zip
 
   release:
     name: Release Binaries
