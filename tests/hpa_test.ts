@@ -6,6 +6,7 @@ import { ScaleTargetRef } from "../src/k8s/scale_target_ref.ts";
 import {Container} from "../src/k8s/container.ts";
 import {ContainerResourceDefinition} from "../src/k8s/container_resource_definition.ts";
 import {Deployment} from "../src/k8s/deployment.ts";
+import {Kind} from "../src/types.ts";
 
 
 Deno.test("Should parse HPA", async ({ step }) => {
@@ -57,27 +58,7 @@ Deno.test("Should parse HPA", async ({ step }) => {
           maxReplicas: 5
     `);
 
-    const deploymentDoc = parse(`
-        kind: Deployment
-        metadata:
-          name: my-deployment-with-hpa
-        spec:
-          replicas: 3
-          template:
-            spec:
-              containers:
-                - name: my-container
-                  resources:
-                    requests:
-                      memory: "512Mi"
-                      cpu: "250m"
-                    limits:
-                      memory: "1Gi"
-                      cpu: "500m"
-    `);
-
     const hpa = Hpa.from(hpaDoc);
-    const deployment = Deployment.from(hpaDoc);
-    assert(hpa.match(deployment));
+    assert(hpa.match({kind: Kind.Deployment, metadata: new Metadata("my-deployment-with-hpa")}));
   });
 });
