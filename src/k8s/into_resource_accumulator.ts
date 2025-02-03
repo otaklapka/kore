@@ -4,7 +4,7 @@ import { ResourceAccumulator } from "../resource_accumulator.ts";
 import { Pvc } from "./pvc.ts";
 import { PvcResourceDefinition } from "./pvc_resource_definition.ts";
 
-export abstract class ResourceRequestor {
+export abstract class IntoResourceAccumulator {
   protected constructor() {}
 
   protected abstract getMaxReplicas(): number;

@@ -4,12 +4,13 @@ import { CronJob } from "./k8s/cron_job.ts";
 import { Pvc } from "./k8s/pvc.ts";
 import { Metadata } from "./k8s/metadata.ts";
 import { Hpa } from "./k8s/hpa.ts";
+import {Job} from "./k8s/job.ts";
 
 export type Options = {
   verbose?: boolean | undefined;
 };
 
-export type KubeObject = Deployment | StatefulSet | CronJob | Pvc | Hpa;
+export type KubeObject = Deployment | StatefulSet | CronJob | Job | Pvc | Hpa;
 
 export interface RefTarget {
   kind: string;
@@ -68,7 +69,7 @@ export interface StatefulSetInfo {
   };
 }
 
-export interface CronJobInfo {
+export interface JobInfo {
   name: string;
   kind: string;
   containers: ContainerInfo[];
@@ -86,12 +87,13 @@ export enum Kind {
   PersistentVolumeClaim = "PersistentVolumeClaim",
   HorizontalPodAutoscaler = "HorizontalPodAutoscaler",
   CronJob = "CronJob",
+  Job = "Job",
 }
 
 export type InfoObject =
   | DeploymentInfo
   | StatefulSetInfo
-  | CronJobInfo
+  | JobInfo
   | PvcInfo;
 
 export interface KoreInfo {

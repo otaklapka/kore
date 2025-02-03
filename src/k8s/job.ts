@@ -3,8 +3,8 @@ import {Container} from "./container.ts";
 import {IntoResourceAccumulator} from "./into_resource_accumulator.ts";
 import {JobInfo, Kind} from "../types.ts";
 
-export class CronJob extends IntoResourceAccumulator {
-  public readonly kind = Kind.CronJob;
+export class Job extends IntoResourceAccumulator {
+  public readonly kind = Kind.Job;
   constructor(
     public readonly metadata: Metadata,
     public readonly containers: Container[],
@@ -20,19 +20,19 @@ export class CronJob extends IntoResourceAccumulator {
     return 1;
   }
 
-  static from(data: any): CronJob {
+  static from(data: any): Job {
     if (
       typeof data === "object" &&
-      data.kind === Kind.CronJob &&
-      Array.isArray(data.spec?.jobTemplate?.spec?.template?.spec?.containers)
+      data.kind === Kind.Job &&
+      Array.isArray(data.spec?.template?.spec?.containers)
     ) {
       const metadata = Metadata.from(data.metadata);
       const containers =
-        (data.spec.jobTemplate.spec.template.spec.containers as Array<
+        (data.spec.template.spec.containers as Array<
           Record<string, any>
         >)
           .map((container) => Container.from(container));
-      return new CronJob(metadata, containers);
+      return new Job(metadata, containers);
     }
 
     throw new Error("Invalid cron job object");
@@ -47,7 +47,7 @@ export class CronJob extends IntoResourceAccumulator {
     return {
       name: this.metadata.name,
       containers: this.containers,
-      kind: Kind.CronJob,
+      kind: Kind.Job,
       resourcesSum: {
         limitsCpuMillis,
         limitsMemoryBytes,

@@ -3,15 +3,12 @@ import { PvcResourceDefinition } from "./k8s/pvc_resource_definition.ts";
 
 export class ResourceAccumulator {
   private containerRequests: ContainerResourceDefinition;
-  private containerLimits: ContainerResourceDefinition;
+  private containerLimits: ContainerResourceDefinition | undefined;
   private pvcRequests: PvcResourceDefinition;
 
   constructor() {
     this.containerRequests = new ContainerResourceDefinition(0, 0);
-    this.containerLimits = new ContainerResourceDefinition(
-      undefined,
-      undefined,
-    );
+    this.containerLimits = undefined;
     this.pvcRequests = new PvcResourceDefinition(0);
   }
 
@@ -24,7 +21,7 @@ export class ResourceAccumulator {
   public accumulateContainerLimits(
     containerLimits: ContainerResourceDefinition,
   ): void {
-    this.containerLimits = this.containerLimits.add(containerLimits);
+    this.containerLimits = this.containerLimits ? this.containerLimits.add(containerLimits) : containerLimits;
   }
 
   public accumulatePvcRequests(pvcRequests: PvcResourceDefinition): void {
@@ -36,7 +33,7 @@ export class ResourceAccumulator {
   }
 
   public getContainerLimits(): ContainerResourceDefinition {
-    return this.containerLimits;
+    return this.containerLimits ?? new ContainerResourceDefinition(undefined, undefined);
   }
 
   public getPvcRequests(): PvcResourceDefinition {

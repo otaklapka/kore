@@ -5,6 +5,7 @@ import { CronJob } from "./k8s/cron_job.ts";
 import { InfoObject, Kind, KoreInfo, KubeObject } from "./types.ts";
 import { Pvc } from "./k8s/pvc.ts";
 import { ResourceAccumulator } from "./resource_accumulator.ts";
+import {Job} from "./k8s/job.ts";
 
 export class Kore {
   private readonly kubeObjects: KubeObject[];
@@ -14,7 +15,7 @@ export class Kore {
 
   private parse(objects: Record<string, any>[]): KubeObject[] {
     return objects.reduce((acu: KubeObject[], obj) => {
-      for (const parser of [Deployment, StatefulSet, CronJob, Pvc, Hpa]) {
+      for (const parser of [Deployment, StatefulSet, CronJob, Pvc, Hpa, Job]) {
         try {
           acu.push(parser.from(obj));
           return acu;

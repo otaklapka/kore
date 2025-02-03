@@ -1,10 +1,10 @@
 import { Metadata } from "./metadata.ts";
 import { Container } from "./container.ts";
-import { ResourceRequestor } from "./resource_requestor.ts";
+import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { DeploymentInfo, Kind } from "../types.ts";
 import { Hpa } from "./hpa.ts";
 
-export class Deployment extends ResourceRequestor {
+export class Deployment extends IntoResourceAccumulator {
   public readonly kind = Kind.Deployment;
   private hpa: Hpa | undefined;
 

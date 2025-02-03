@@ -1,10 +1,10 @@
 import { Metadata } from "./metadata.ts";
 import { Container } from "./container.ts";
 import { Pvc } from "./pvc.ts";
-import { ResourceRequestor } from "./resource_requestor.ts";
+import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { Kind, StatefulSetInfo } from "../types.ts";
 
-export class StatefulSet extends ResourceRequestor {
+export class StatefulSet extends IntoResourceAccumulator {
   public readonly kind = Kind.StatefulSet;
   constructor(
     public readonly metadata: Metadata,

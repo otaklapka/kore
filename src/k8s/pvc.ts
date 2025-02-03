@@ -1,11 +1,11 @@
 import { PvcResourceDefinition } from "./pvc_resource_definition.ts";
 import { Metadata } from "./metadata.ts";
 import { Kind, PvcInfo } from "../types.ts";
-import { ResourceRequestor } from "./resource_requestor.ts";
+import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { Container } from "./container.ts";
 import { ResourceAccumulator } from "../resource_accumulator.ts";
 
-export class Pvc extends ResourceRequestor {
+export class Pvc extends IntoResourceAccumulator {
   public readonly kind = Kind.PersistentVolumeClaim;
   constructor(
     public readonly metadata: Metadata,

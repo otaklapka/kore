@@ -1,7 +1,6 @@
 import {
   ContainerInfo,
-  CronJobInfo,
-  DeploymentInfo,
+  DeploymentInfo, JobInfo,
   Kind,
   KoreInfo,
   PvcInfo,
@@ -39,7 +38,8 @@ export class KoreTable {
           );
           break;
         case Kind.CronJob:
-          table.push(...this.cronJobInfoIntoTableRow(objInfo as CronJobInfo));
+        case Kind.Job:
+          table.push(...this.jobInfoIntoTableRow(objInfo as JobInfo));
           break;
         case Kind.PersistentVolumeClaim:
           table.push(this.pvcInfoIntoTableRow(objInfo as PvcInfo));
@@ -58,7 +58,7 @@ export class KoreTable {
       FmtUtil.fmtCpuMillis(this.info.resourcesSum.limitsCpuMillis),
       FmtUtil.fmtMemoryBytes(this.info.resourcesSum.limitsMemoryBytes),
       FmtUtil.fmtMemoryBytes(this.info.resourcesSum.requestsStorageBytes),
-    ].map(val => bold(val)));
+    ].map((val) => bold(val)));
 
     table.render();
   }
@@ -83,7 +83,7 @@ export class KoreTable {
     ];
   }
 
-  private cronJobInfoIntoTableRow(obj: CronJobInfo): RowType[] {
+  private jobInfoIntoTableRow(obj: JobInfo): RowType[] {
     return [
       [
         obj.name,
@@ -130,7 +130,7 @@ export class KoreTable {
       FmtUtil.fmtCpuMillis(obj.limits.cpuMillis),
       FmtUtil.fmtMemoryBytes(obj.limits.memoryBytes),
       "",
-    ].map(val => dim(val));
+    ].map((val) => dim(val));
   }
 
   private pvcInfoIntoTableRow(obj: PvcInfo, nested: boolean = false): RowType {
@@ -146,6 +146,6 @@ export class KoreTable {
       "",
       "",
       storageBytesFmtdVal,
-    ].map(val => nested ? dim(val) : val);
+    ].map((val) => nested ? dim(val) : val);
   }
 }
