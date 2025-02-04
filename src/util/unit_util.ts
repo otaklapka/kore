@@ -1,3 +1,4 @@
+import { sprintf } from "@std/fmt/printf";
 export class UnitUtil {
   private static MEMORY_UNIT_TO_BYTES: Map<string, number> = new Map([
     ["Ei", 2 ** 60],
@@ -52,16 +53,27 @@ export class UnitUtil {
   static memoryBytesIntoHuman(memoryBytes: number): string {
     for (const [unit, bytes] of this.MEMORY_UNIT_TO_BYTES.entries()) {
       if (unit.length > 1 && memoryBytes >= bytes) {
-        return `${memoryBytes / bytes}${unit}`;
+        return `${this.fmtNumber(memoryBytes / bytes)}${unit}`;
       }
     }
-    return memoryBytes.toString();
+    return this.fmtNumber(memoryBytes);
   }
 
   static cpuMilisToHuman(cpuMilis: number): string {
     if (cpuMilis >= 1) {
-      return `${cpuMilis}`;
+      return `${this.fmtNumber(cpuMilis)}`;
     }
-    return `${cpuMilis * 1000}m`;
+    return `${this.fmtNumber(cpuMilis * 1000)}m`;
+  }
+
+  static fmtNumber(number: number): string {
+    switch(number.toString().split(".")[1]?.length) {
+      case undefined:
+        return number.toString();
+      case 1:
+        return sprintf("%.1f", number);
+      default:
+        return sprintf("%.2f", number);
+    }
   }
 }
