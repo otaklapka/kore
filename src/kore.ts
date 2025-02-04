@@ -5,7 +5,8 @@ import { CronJob } from "./k8s/cron_job.ts";
 import { InfoObject, Kind, KoreInfo, KubeObject } from "./types.ts";
 import { Pvc } from "./k8s/pvc.ts";
 import { ResourceAccumulator } from "./resource_accumulator.ts";
-import {Job} from "./k8s/job.ts";
+import { Job } from "./k8s/job.ts";
+import { Scalable } from "./k8s/scalable.ts";
 
 export class Kore {
   private readonly kubeObjects: KubeObject[];
@@ -35,7 +36,7 @@ export class Kore {
     const infoObjects = this.kubeObjects.reduce(
       (acc: InfoObject[], kubeObj) => {
         if ("intoInfo" in kubeObj) {
-          if (kubeObj.kind === Kind.Deployment) {
+          if (kubeObj instanceof Scalable) {
             const matchedHpa = hpas.find((hpa) => hpa.match(kubeObj));
             if (matchedHpa) {
               kubeObj.setHpa(matchedHpa);

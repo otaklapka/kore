@@ -4,10 +4,16 @@ import { CronJob } from "./k8s/cron_job.ts";
 import { Pvc } from "./k8s/pvc.ts";
 import { Metadata } from "./k8s/metadata.ts";
 import { Hpa } from "./k8s/hpa.ts";
-import {Job} from "./k8s/job.ts";
+import { Job } from "./k8s/job.ts";
+
+export enum Output {
+  Json = "json",
+  Table = "table",
+}
 
 export type Options = {
   verbose?: boolean | undefined;
+  output: Output;
 };
 
 export type KubeObject = Deployment | StatefulSet | CronJob | Job | Pvc | Hpa;
@@ -59,7 +65,8 @@ export interface StatefulSetInfo {
   kind: string;
   containers: ContainerInfo[];
   pvcs: PvcInfo[];
-  replicas: number;
+  minReplicas: number;
+  maxReplicas: number;
   resourcesSum: {
     requestsCpuMillis: number;
     requestsMemoryBytes: number;

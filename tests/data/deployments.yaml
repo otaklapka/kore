@@ -26,33 +26,15 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
----
-# Deployment without HPA
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-deployment-without-hpa
-  namespace: default
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: my-app-without-hpa
-  template:
-    metadata:
-      labels:
-        app: my-app-without-hpa
-    spec:
-      containers:
-        - name: my-container
+        - name: my-next-container
           image: my-container-image:latest
-          ports:
-            - containerPort: 8080
           resources:
             requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
               memory: "512Mi"
-              cpu: "250m"
-            # No limits specified
+              cpu: "200m"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -101,7 +83,6 @@ spec:
           persistentVolumeClaim:
             claimName: my-pvc
 ---
-
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -121,3 +102,4 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
+---

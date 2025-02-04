@@ -50,6 +50,14 @@ export class UnitUtil {
     throw new Error("Invalid memory value");
   }
 
+  public static sumMemory(...args: string[]): number {
+    return args.reduce((acc, val) => this.parseMemoryBytes(val) + acc, 0);
+  }
+
+  public static sumCpu(...args: string[]): number {
+    return args.reduce((acc, val) => this.parseCpuMillis(val) + acc, 0);
+  }
+
   static memoryBytesIntoHuman(memoryBytes: number): string {
     for (const [unit, bytes] of this.MEMORY_UNIT_TO_BYTES.entries()) {
       if (unit.length > 1 && memoryBytes >= bytes) {
@@ -67,7 +75,7 @@ export class UnitUtil {
   }
 
   static fmtNumber(number: number): string {
-    switch(number.toString().split(".")[1]?.length) {
+    switch (number.toString().split(".")[1]?.length) {
       case undefined:
         return number.toString();
       case 1:

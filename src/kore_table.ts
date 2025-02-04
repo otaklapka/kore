@@ -1,13 +1,14 @@
 import {
   ContainerInfo,
-  DeploymentInfo, JobInfo,
+  DeploymentInfo,
+  JobInfo,
   Kind,
   KoreInfo,
   PvcInfo,
   StatefulSetInfo,
 } from "./types.ts";
 import { FmtUtil } from "./util/fmt_util.ts";
-import { Cell, RowType, Table } from "@cliffy/table";
+import { RowType, Table } from "@cliffy/table";
 import { bold, dim } from "@std/fmt/colors";
 export class KoreTable {
   constructor(private readonly info: KoreInfo) {}
@@ -23,7 +24,7 @@ export class KoreTable {
         "limits.cpu",
         "limits.memory",
         "requests.storage",
-      ]);
+      ].map((header) => bold(header)));
 
     for (const objInfo of this.info.objects) {
       switch (objInfo.kind) {
@@ -106,7 +107,9 @@ export class KoreTable {
       [
         obj.name,
         obj.kind,
-        obj.replicas,
+        obj.minReplicas !== obj.maxReplicas
+          ? `${obj.minReplicas}→${obj.maxReplicas}`
+          : obj.maxReplicas,
         FmtUtil.fmtCpuMillis(obj.resourcesSum.requestsCpuMillis),
         FmtUtil.fmtMemoryBytes(obj.resourcesSum.requestsMemoryBytes),
         FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis),
@@ -138,7 +141,7 @@ export class KoreTable {
       obj.resourcesSum.requestsStorageBytes,
     );
     return [
-      obj.name,
+      nested ? `  ${obj.name}` : obj.name,
       obj.kind,
       "",
       "",

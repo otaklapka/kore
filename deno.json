@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-read src/main.ts -v './tests/data/test.yaml' './tests/data/test1.yaml' './tests/data/test2.yaml'"
+    "start:fixed": "deno run --allow-read src/main.ts -v './tests/data/test.yaml' './tests/data/test1.yaml' './tests/data/test2.yaml'",
+    "start": "deno run --allow-read src/main.ts"
   },
   "imports": {
     "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",

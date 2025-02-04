@@ -1,4 +1,4 @@
-import { RefTarget } from "../types.ts";
+import { Scalable } from "./scalable.ts";
 
 export class ScaleTargetRef {
   constructor(
@@ -17,7 +17,7 @@ export class ScaleTargetRef {
     throw new Error("Invalid scale target ref object");
   }
 
-  public match(target: RefTarget): boolean {
+  public match(target: Scalable): boolean {
     return target.kind === this.kind && target.metadata.name === this.name;
   }
 }

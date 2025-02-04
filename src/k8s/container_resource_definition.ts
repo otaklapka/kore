@@ -1,3 +1,4 @@
+import { ContainerResourceDefinitionInfo } from "../types.ts";
 import { UnitUtil } from "../util/unit_util.ts";
 
 export class ContainerResourceDefinition {
@@ -56,5 +57,12 @@ export class ContainerResourceDefinition {
       : undefined;
 
     return new ContainerResourceDefinition(cpu, memory);
+  }
+
+  public intoInfo(): ContainerResourceDefinitionInfo {
+    return {
+      cpuMillis: this.cpuMillis,
+      memoryBytes: this.memoryBytes,
+    };
   }
 }

@@ -1,7 +1,7 @@
-import {Metadata} from "./metadata.ts";
-import {Container} from "./container.ts";
-import {IntoResourceAccumulator} from "./into_resource_accumulator.ts";
-import {JobInfo, Kind} from "../types.ts";
+import { Metadata } from "./metadata.ts";
+import { Container } from "./container.ts";
+import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
+import { JobInfo, Kind } from "../types.ts";
 
 export class Job extends IntoResourceAccumulator {
   public readonly kind = Kind.Job;
@@ -27,11 +27,10 @@ export class Job extends IntoResourceAccumulator {
       Array.isArray(data.spec?.template?.spec?.containers)
     ) {
       const metadata = Metadata.from(data.metadata);
-      const containers =
-        (data.spec.template.spec.containers as Array<
-          Record<string, any>
-        >)
-          .map((container) => Container.from(container));
+      const containers = (data.spec.template.spec.containers as Array<
+        Record<string, any>
+      >)
+        .map((container) => Container.from(container));
       return new Job(metadata, containers);
     }
 
@@ -46,7 +45,7 @@ export class Job extends IntoResourceAccumulator {
 
     return {
       name: this.metadata.name,
-      containers: this.containers,
+      containers: this.containers.map((container) => container.intoInfo()),
       kind: Kind.Job,
       resourcesSum: {
         limitsCpuMillis,

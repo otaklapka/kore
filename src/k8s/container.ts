@@ -1,4 +1,5 @@
 import { ContainerResourceDefinition } from "./container_resource_definition.ts";
+import { ContainerInfo } from "../types.ts";
 
 export class Container {
   constructor(
@@ -26,5 +27,13 @@ export class Container {
     }
 
     throw new Error("Invalid input data");
+  }
+
+  public intoInfo(): ContainerInfo {
+    return {
+      name: this.name,
+      requests: this.requests.intoInfo(),
+      limits: this.limits.intoInfo(),
+    };
   }
 }

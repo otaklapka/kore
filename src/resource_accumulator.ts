@@ -21,7 +21,9 @@ export class ResourceAccumulator {
   public accumulateContainerLimits(
     containerLimits: ContainerResourceDefinition,
   ): void {
-    this.containerLimits = this.containerLimits ? this.containerLimits.add(containerLimits) : containerLimits;
+    this.containerLimits = this.containerLimits
+      ? this.containerLimits.add(containerLimits)
+      : containerLimits;
   }
 
   public accumulatePvcRequests(pvcRequests: PvcResourceDefinition): void {
@@ -33,7 +35,8 @@ export class ResourceAccumulator {
   }
 
   public getContainerLimits(): ContainerResourceDefinition {
-    return this.containerLimits ?? new ContainerResourceDefinition(undefined, undefined);
+    return this.containerLimits ??
+      new ContainerResourceDefinition(undefined, undefined);
   }
 
   public getPvcRequests(): PvcResourceDefinition {

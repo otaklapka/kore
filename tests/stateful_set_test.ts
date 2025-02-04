@@ -1,8 +1,8 @@
-import {assert, assertEquals} from "@std/assert";
-import {parse} from "@std/yaml";
-import {StatefulSet} from "../src/k8s/stateful_set.ts";
-import {Metadata} from "../src/k8s/metadata.ts";
-import {Kind} from "../src/types.ts";
+import { assert, assertEquals } from "@std/assert";
+import { parse } from "@std/yaml";
+import { StatefulSet } from "../src/k8s/stateful_set.ts";
+import { Metadata } from "../src/k8s/metadata.ts";
+import { Kind } from "../src/types.ts";
 
 Deno.test("Should parse stateful set", async ({ step }) => {
   await step("Should parse all fields when defined", () => {
@@ -38,8 +38,12 @@ Deno.test("Should parse stateful set", async ({ step }) => {
     assert(statefulSet.containers.length === 1);
     assert(statefulSet.pvcTemplates.length === 1);
 
-    const containerLimitSum = statefulSet.getContainerLimitsSum().multiply(statefulSet.replicas);
-    const containerRequestSum = statefulSet.getContainerRequestsSum().multiply(statefulSet.replicas);
+    const containerLimitSum = statefulSet.getContainerLimitsSum().multiply(
+      statefulSet.replicas,
+    );
+    const containerRequestSum = statefulSet.getContainerRequestsSum().multiply(
+      statefulSet.replicas,
+    );
     assertEquals(statefulSet.intoInfo(), {
       name: statefulSet.metadata.name,
       replicas: statefulSet.replicas,
@@ -51,9 +55,11 @@ Deno.test("Should parse stateful set", async ({ step }) => {
         limitsMemoryBytes: containerLimitSum.memoryBytes,
         requestsCpuMillis: containerRequestSum.cpuMillis!,
         requestsMemoryBytes: containerRequestSum.memoryBytes!,
-        requestsStorageBytes: statefulSet.getPvcRequestsSum().multiply(statefulSet.replicas).storageBytes!,
+        requestsStorageBytes: statefulSet.getPvcRequestsSum().multiply(
+          statefulSet.replicas,
+        ).storageBytes!,
       },
-    })
+    });
   });
   await step("Should have default values", () => {
     const doc = parse(`
@@ -85,6 +91,6 @@ Deno.test("Should parse stateful set", async ({ step }) => {
         requestsMemoryBytes: 0,
         requestsStorageBytes: 0,
       },
-    })
+    });
   });
 });

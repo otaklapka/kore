@@ -3,11 +3,10 @@ import { parse } from "@std/yaml";
 import { Metadata } from "../src/k8s/metadata.ts";
 import { Hpa } from "../src/k8s/hpa.ts";
 import { ScaleTargetRef } from "../src/k8s/scale_target_ref.ts";
-import {Container} from "../src/k8s/container.ts";
-import {ContainerResourceDefinition} from "../src/k8s/container_resource_definition.ts";
-import {Deployment} from "../src/k8s/deployment.ts";
-import {Kind} from "../src/types.ts";
-
+import { Container } from "../src/k8s/container.ts";
+import { ContainerResourceDefinition } from "../src/k8s/container_resource_definition.ts";
+import { Deployment } from "../src/k8s/deployment.ts";
+import { Kind } from "../src/types.ts";
 
 Deno.test("Should parse HPA", async ({ step }) => {
   await step("Should parse full definition", () => {
@@ -59,6 +58,11 @@ Deno.test("Should parse HPA", async ({ step }) => {
     `);
 
     const hpa = Hpa.from(hpaDoc);
-    assert(hpa.match({kind: Kind.Deployment, metadata: new Metadata("my-deployment-with-hpa")}));
+    assert(
+      hpa.match({
+        kind: Kind.Deployment,
+        metadata: new Metadata("my-deployment-with-hpa"),
+      }),
+    );
   });
 });

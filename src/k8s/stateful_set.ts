@@ -3,8 +3,9 @@ import { Container } from "./container.ts";
 import { Pvc } from "./pvc.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { Kind, StatefulSetInfo } from "../types.ts";
+import { Scalable } from "./scalable.ts";
 
-export class StatefulSet extends IntoResourceAccumulator {
+export class StatefulSet extends Scalable {
   public readonly kind = Kind.StatefulSet;
   constructor(
     public readonly metadata: Metadata,
@@ -17,10 +18,6 @@ export class StatefulSet extends IntoResourceAccumulator {
 
   protected getContainers(): Container[] {
     return this.containers;
-  }
-
-  protected getMaxReplicas(): number {
-    return this.replicas;
   }
 
   protected override getPvcs(): Pvc[] {
@@ -57,12 +54,13 @@ export class StatefulSet extends IntoResourceAccumulator {
     const { cpuMillis: requestsCpuMillis, memoryBytes: requestsMemoryBytes } =
       this.getContainerRequestsSum().multiply(this.getMaxReplicas());
     const { storageBytes: requestsStorageBytes } = this.getPvcRequestsSum()
-      .multiply(this.replicas);
+      .multiply(this.getMaxReplicas());
 
     return {
       name: this.metadata.name,
-      replicas: this.replicas,
-      containers: this.containers,
+      minReplicas: this.hpa ? this.hpa.minReplicas : this.replicas,
+      maxReplicas: this.getMaxReplicas(),
+      containers: this.containers.map((container) => container.intoInfo()),
       kind: Kind.StatefulSet,
       pvcs: this.pvcTemplates.map((pvc) => pvc.intoInfo()),
       resourcesSum: {

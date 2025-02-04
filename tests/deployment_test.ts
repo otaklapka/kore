@@ -7,7 +7,7 @@ import { Deployment } from "../src/k8s/deployment.ts";
 import { Kind } from "../src/types.ts";
 import { Hpa } from "../src/k8s/hpa.ts";
 import { ScaleTargetRef } from "../src/k8s/scale_target_ref.ts";
-import {ResourceAccumulator} from "../src/resource_accumulator.ts";
+import { ResourceAccumulator } from "../src/resource_accumulator.ts";
 
 Deno.test("Should parse deployment", async ({ step }) => {
   await step("Should parse full definition", () => {
@@ -166,15 +166,33 @@ Deno.test("Should sum resources", async ({ step }) => {
     const limits = resourceAcc.getContainerLimits();
     const requests = resourceAcc.getContainerRequests();
 
-    assertEquals(requests.memoryBytes, (UnitUtil.parseMemoryBytes("64Mi") + UnitUtil.parseMemoryBytes("512Mi")) * deployment.replicas);
-    assertEquals(requests.cpuMillis, (UnitUtil.parseCpuMillis("250m") + UnitUtil.parseCpuMillis("250m")) * deployment.replicas);
+    assertEquals(
+      requests.memoryBytes,
+      (UnitUtil.parseMemoryBytes("64Mi") + UnitUtil.parseMemoryBytes("512Mi")) *
+        deployment.replicas,
+    );
+    assertEquals(
+      requests.cpuMillis,
+      (UnitUtil.parseCpuMillis("250m") + UnitUtil.parseCpuMillis("250m")) *
+        deployment.replicas,
+    );
 
-    assertEquals(limits.memoryBytes, (UnitUtil.parseMemoryBytes("128Mi") + UnitUtil.parseMemoryBytes("1Gi")) * deployment.replicas);
-    assertEquals(limits.cpuMillis, (UnitUtil.parseCpuMillis("500m") + UnitUtil.parseCpuMillis("500m")) * deployment.replicas);
+    assertEquals(
+      limits.memoryBytes,
+      (UnitUtil.parseMemoryBytes("128Mi") + UnitUtil.parseMemoryBytes("1Gi")) *
+        deployment.replicas,
+    );
+    assertEquals(
+      limits.cpuMillis,
+      (UnitUtil.parseCpuMillis("500m") + UnitUtil.parseCpuMillis("500m")) *
+        deployment.replicas,
+    );
   });
 
-  await step("Limits should be undefined when some container has not defined limits", () => {
-    const doc = parse(`
+  await step(
+    "Limits should be undefined when some container has not defined limits",
+    () => {
+      const doc = parse(`
         kind: Deployment
         metadata:
           name: my-deployment
@@ -194,19 +212,26 @@ Deno.test("Should sum resources", async ({ step }) => {
                 - name: my-second-container
     `);
 
-    const deployment = Deployment.from(doc);
-    const resourceAcc = new ResourceAccumulator();
-    deployment.intoResourceAccumulator(resourceAcc);
+      const deployment = Deployment.from(doc);
+      const resourceAcc = new ResourceAccumulator();
+      deployment.intoResourceAccumulator(resourceAcc);
 
-    const limits = resourceAcc.getContainerLimits();
-    const requests = resourceAcc.getContainerRequests();
+      const limits = resourceAcc.getContainerLimits();
+      const requests = resourceAcc.getContainerRequests();
 
-    assertEquals(requests.memoryBytes, UnitUtil.parseMemoryBytes("512Mi") * deployment.replicas);
-    assertEquals(requests.cpuMillis, UnitUtil.parseCpuMillis("250m") * deployment.replicas);
+      assertEquals(
+        requests.memoryBytes,
+        UnitUtil.parseMemoryBytes("512Mi") * deployment.replicas,
+      );
+      assertEquals(
+        requests.cpuMillis,
+        UnitUtil.parseCpuMillis("250m") * deployment.replicas,
+      );
 
-    assertEquals(limits.memoryBytes, undefined);
-    assertEquals(limits.cpuMillis, undefined);
-  });
+      assertEquals(limits.memoryBytes, undefined);
+      assertEquals(limits.cpuMillis, undefined);
+    },
+  );
 
   await step("Requests should be 0 when containers not have defined", () => {
     const doc = parse(`
@@ -241,7 +266,15 @@ Deno.test("Should sum resources", async ({ step }) => {
     assertEquals(requests.memoryBytes, 0);
     assertEquals(requests.cpuMillis, 0);
 
-    assertEquals(limits.memoryBytes, (UnitUtil.parseMemoryBytes("128Mi") + UnitUtil.parseMemoryBytes("1Gi")) * deployment.replicas);
-    assertEquals(limits.cpuMillis, (UnitUtil.parseCpuMillis("500m") + UnitUtil.parseCpuMillis("500m")) * deployment.replicas);
+    assertEquals(
+      limits.memoryBytes,
+      (UnitUtil.parseMemoryBytes("128Mi") + UnitUtil.parseMemoryBytes("1Gi")) *
+        deployment.replicas,
+    );
+    assertEquals(
+      limits.cpuMillis,
+      (UnitUtil.parseCpuMillis("500m") + UnitUtil.parseCpuMillis("500m")) *
+        deployment.replicas,
+    );
   });
 });

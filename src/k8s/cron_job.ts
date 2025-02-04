@@ -1,7 +1,7 @@
-import {Metadata} from "./metadata.ts";
-import {Container} from "./container.ts";
-import {IntoResourceAccumulator} from "./into_resource_accumulator.ts";
-import {JobInfo, Kind} from "../types.ts";
+import { Metadata } from "./metadata.ts";
+import { Container } from "./container.ts";
+import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
+import { JobInfo, Kind } from "../types.ts";
 
 export class CronJob extends IntoResourceAccumulator {
   public readonly kind = Kind.CronJob;
@@ -46,7 +46,7 @@ export class CronJob extends IntoResourceAccumulator {
 
     return {
       name: this.metadata.name,
-      containers: this.containers,
+      containers: this.containers.map((container) => container.intoInfo()),
       kind: Kind.CronJob,
       resourcesSum: {
         limitsCpuMillis,

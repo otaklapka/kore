@@ -1,9 +1,9 @@
-import {assert, assertEquals} from "@std/assert";
-import {parse} from "@std/yaml";
-import {Metadata} from "../src/k8s/metadata.ts";
-import {Container} from "../src/k8s/container.ts";
-import {UnitUtil} from "../src/util/unit_util.ts";
-import {Job} from "../src/k8s/job.ts";
+import { assert, assertEquals } from "@std/assert";
+import { parse } from "@std/yaml";
+import { Metadata } from "../src/k8s/metadata.ts";
+import { Container } from "../src/k8s/container.ts";
+import { UnitUtil } from "../src/util/unit_util.ts";
+import { Job } from "../src/k8s/job.ts";
 
 Deno.test("Should parse job", async ({ step }) => {
   await step("Should parse full definition", () => {
