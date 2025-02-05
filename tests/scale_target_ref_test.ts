@@ -3,7 +3,7 @@ import { parse } from "@std/yaml";
 import { ScaleTargetRef } from "../src/k8s/scale_target_ref.ts";
 import { Metadata } from "../src/k8s/metadata.ts";
 import { Kind } from "../src/types.ts";
-import {Deployment} from "../src/k8s/deployment.ts";
+import { Deployment } from "../src/k8s/deployment.ts";
 
 Deno.test("Should parse all scaleTargetRef fields", () => {
   const doc = parse(`
@@ -11,7 +11,7 @@ Deno.test("Should parse all scaleTargetRef fields", () => {
         kind: Deployment
         name: my-deployment-with-hpa
     `);
-    const deployDoc = parse(`
+  const deployDoc = parse(`
         kind: Deployment
         metadata:
           name: my-deployment-with-hpa

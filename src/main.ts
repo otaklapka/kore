@@ -4,14 +4,32 @@ import { Options, Output } from "./types.ts";
 import { Kore } from "./kore.ts";
 import { KoreTable } from "./kore_table.ts";
 
-const run = async (options: Options, ...args: string[]): Promise<void> => {
-  const docs: object[] = await Promise.all(
-    args.map(async (file) => {
-      const fileContents = await Deno.readTextFile(file).catch((err) => {
+const parseStdIn = async (): Promise<object[] | never> => {
+  const decoder = new TextDecoder();
+  let stdIn: string | undefined = undefined;
+  for await (const chunk of Deno.stdin.readable) {
+    stdIn = decoder.decode(chunk);
+  }
+
+  if (stdIn) {
+    try {
+      return parseAll(stdIn) as object[];
+    } catch (err) {
+      console.error(
+        `Failed to parse yaml from stdin. ${
+          (err as Error | undefined)?.message
+        }`,
+      );
+    }
+  }
+  return Deno.exit(1);
+};
+
+const parseInputFiles = async (files: string[]): Promise<object[]> => {
+  const fileObjs = await Promise.all(
+    files.map(async (file) => {
+      const fileContents = await Deno.readTextFile(file).catch(() => {
         console.error(`File ${file} not found`);
-        if (options.verbose) {
-          console.error(`JS Error: ${err}`);
-        }
         Deno.exit(1);
       });
 
@@ -28,7 +46,20 @@ const run = async (options: Options, ...args: string[]): Promise<void> => {
     }),
   );
 
-  const kore = new Kore(docs.flat());
+  return fileObjs.flat();
+};
+
+const run = async (options: Options, ...args: string[]): Promise<void> => {
+  if (Deno.stdin.isTerminal() && !args.length) {
+    console.error("No input");
+    Deno.exit(1);
+  }
+
+  let docs: object[] = Deno.stdin.isTerminal()
+    ? await parseInputFiles(args)
+    : await parseStdIn();
+
+  const kore = new Kore(docs);
 
   switch (options.output) {
     case Output.Json:
@@ -51,6 +82,6 @@ await new Command()
     default: Output.Table,
   })
   .option("-v, --verbose", "Enable verbose output")
-  .arguments("<files...>")
+  .arguments("[files...]")
   .action((options: Options, ...args: string[]) => run(options, ...args))
   .parse(Deno.args);

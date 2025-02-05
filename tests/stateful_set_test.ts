@@ -48,7 +48,9 @@ Deno.test("Should parse stateful set", async ({ step }) => {
       name: statefulSet.metadata.name,
       minReplicas: statefulSet.replicas,
       maxReplicas: statefulSet.replicas,
-      containers: statefulSet.containers.map(container => container.intoInfo()),
+      containers: statefulSet.containers.map((container) =>
+        container.intoInfo()
+      ),
       kind: Kind.StatefulSet,
       pvcs: statefulSet.pvcTemplates.map((pvc) => pvc.intoInfo()),
       resourcesSum: {
@@ -83,7 +85,9 @@ Deno.test("Should parse stateful set", async ({ step }) => {
       name: statefulSet.metadata.name,
       minReplicas: statefulSet.replicas,
       maxReplicas: statefulSet.replicas,
-      containers: statefulSet.containers.map(container => container.intoInfo()),
+      containers: statefulSet.containers.map((container) =>
+        container.intoInfo()
+      ),
       kind: Kind.StatefulSet,
       pvcs: [],
       resourcesSum: {

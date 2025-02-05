@@ -56,8 +56,11 @@ export class KoreTable {
       "",
       FmtUtil.fmtCpuMillis(this.info.resourcesSum.requestsCpuMillis),
       FmtUtil.fmtMemoryBytes(this.info.resourcesSum.requestsMemoryBytes),
-      FmtUtil.fmtCpuMillis(this.info.resourcesSum.limitsCpuMillis),
-      FmtUtil.fmtMemoryBytes(this.info.resourcesSum.limitsMemoryBytes),
+      FmtUtil.fmtCpuMillis(this.info.resourcesSum.limitsCpuMillis, "unlimited"),
+      FmtUtil.fmtMemoryBytes(
+        this.info.resourcesSum.limitsMemoryBytes,
+        "unlimited",
+      ),
       FmtUtil.fmtMemoryBytes(this.info.resourcesSum.requestsStorageBytes),
     ].map((val) => bold(val)));
 
@@ -74,8 +77,8 @@ export class KoreTable {
           : obj.maxReplicas,
         FmtUtil.fmtCpuMillis(obj.resourcesSum.requestsCpuMillis),
         FmtUtil.fmtMemoryBytes(obj.resourcesSum.requestsMemoryBytes),
-        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis),
-        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes),
+        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis, "unlimited"),
+        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes, "unlimited"),
         "",
       ],
       ...obj.containers.map((container) =>
@@ -92,8 +95,8 @@ export class KoreTable {
         1,
         FmtUtil.fmtCpuMillis(obj.resourcesSum.requestsCpuMillis),
         FmtUtil.fmtMemoryBytes(obj.resourcesSum.requestsMemoryBytes),
-        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis),
-        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes),
+        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis, "unlimited"),
+        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes, "unlimited"),
         "",
       ],
       ...obj.containers.map((container) =>
@@ -112,8 +115,8 @@ export class KoreTable {
           : obj.maxReplicas,
         FmtUtil.fmtCpuMillis(obj.resourcesSum.requestsCpuMillis),
         FmtUtil.fmtMemoryBytes(obj.resourcesSum.requestsMemoryBytes),
-        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis),
-        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes),
+        FmtUtil.fmtCpuMillis(obj.resourcesSum.limitsCpuMillis, "unlimited"),
+        FmtUtil.fmtMemoryBytes(obj.resourcesSum.limitsMemoryBytes, "unlimited"),
         FmtUtil.fmtMemoryBytes(obj.resourcesSum.requestsStorageBytes),
       ],
       ...obj.containers.map((container) =>
@@ -130,8 +133,8 @@ export class KoreTable {
       "",
       FmtUtil.fmtCpuMillis(obj.requests.cpuMillis),
       FmtUtil.fmtMemoryBytes(obj.requests.memoryBytes),
-      FmtUtil.fmtCpuMillis(obj.limits.cpuMillis),
-      FmtUtil.fmtMemoryBytes(obj.limits.memoryBytes),
+      FmtUtil.fmtCpuMillis(obj.limits.cpuMillis, "unlimited"),
+      FmtUtil.fmtMemoryBytes(obj.limits.memoryBytes, "unlimited"),
       "",
     ].map((val) => dim(val));
   }
