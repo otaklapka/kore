@@ -4,6 +4,8 @@
 
 CLI tool to parse and sum limits and requests from kubernetes YAMLs
 
+<iframe src="https://app.warp.dev/block/embed/dKDyODX6hlDQKg9y7wPd88" title="kore" style="width: 611px; height: 331px; border:0; overflow:hidden;" allow="clipboard-read; clipboard-write"></iframe>
+
 ### 🚧 Waring: WIP 🚧
 
 ### Install instructions
