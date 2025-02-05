@@ -46,8 +46,9 @@ Deno.test("Should parse stateful set", async ({ step }) => {
     );
     assertEquals(statefulSet.intoInfo(), {
       name: statefulSet.metadata.name,
-      replicas: statefulSet.replicas,
-      containers: statefulSet.containers,
+      minReplicas: statefulSet.replicas,
+      maxReplicas: statefulSet.replicas,
+      containers: statefulSet.containers.map(container => container.intoInfo()),
       kind: Kind.StatefulSet,
       pvcs: statefulSet.pvcTemplates.map((pvc) => pvc.intoInfo()),
       resourcesSum: {
@@ -80,8 +81,9 @@ Deno.test("Should parse stateful set", async ({ step }) => {
     assert(statefulSet.pvcTemplates.length === 0);
     assertEquals(statefulSet.intoInfo(), {
       name: statefulSet.metadata.name,
-      replicas: statefulSet.replicas,
-      containers: statefulSet.containers,
+      minReplicas: statefulSet.replicas,
+      maxReplicas: statefulSet.replicas,
+      containers: statefulSet.containers.map(container => container.intoInfo()),
       kind: Kind.StatefulSet,
       pvcs: [],
       resourcesSum: {

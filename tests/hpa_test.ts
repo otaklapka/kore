@@ -56,13 +56,22 @@ Deno.test("Should parse HPA", async ({ step }) => {
             name: my-deployment-with-hpa
           maxReplicas: 5
     `);
+    const deployDoc = parse(`
+        kind: Deployment
+        metadata:
+          name: my-deployment-with-hpa
+        spec:
+          replicas: 3
+          template:
+            spec:
+              containers:
+                - name: my-container
+    `);
 
     const hpa = Hpa.from(hpaDoc);
+    const deploy = Deployment.from(deployDoc);
     assert(
-      hpa.match({
-        kind: Kind.Deployment,
-        metadata: new Metadata("my-deployment-with-hpa"),
-      }),
+      hpa.match(deploy),
     );
   });
 });

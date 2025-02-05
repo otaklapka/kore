@@ -38,7 +38,7 @@ Deno.test("Should parse deployment", async ({ step }) => {
     assertEquals(deployment.intoInfo(), {
       name: deployment.metadata.name,
       kind: Kind.Deployment,
-      containers: deployment.containers,
+      containers: deployment.containers.map(container => container.intoInfo()),
       minReplicas: 3,
       maxReplicas: 3,
       resourcesSum: {
@@ -72,7 +72,7 @@ Deno.test("Should parse deployment", async ({ step }) => {
       assertEquals(deployment.intoInfo(), {
         name: deployment.metadata.name,
         kind: Kind.Deployment,
-        containers: deployment.containers,
+        containers: deployment.containers.map(container => container.intoInfo()),
         minReplicas: 1,
         maxReplicas: 1,
         resourcesSum: {
@@ -117,7 +117,7 @@ Deno.test("Should parse deployment", async ({ step }) => {
     assertEquals(deployment.intoInfo(), {
       name: deployment.metadata.name,
       kind: Kind.Deployment,
-      containers: deployment.containers,
+      containers: deployment.containers.map(container => container.intoInfo()),
       minReplicas: 1,
       maxReplicas: 5,
       resourcesSum: {

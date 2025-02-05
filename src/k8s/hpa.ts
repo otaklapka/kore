@@ -1,6 +1,6 @@
 import { Metadata } from "./metadata.ts";
 import { ScaleTargetRef } from "./scale_target_ref.ts";
-import { Kind, RefTarget } from "../types.ts";
+import { Kind } from "../types.ts";
 import { Scalable } from "./scalable.ts";
 
 export class Hpa {

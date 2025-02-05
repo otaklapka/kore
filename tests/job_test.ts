@@ -33,7 +33,7 @@ Deno.test("Should parse job", async ({ step }) => {
     assertEquals(job.intoInfo(), {
       name: job.metadata.name,
       kind: job.kind,
-      containers: job.containers,
+      containers: job.containers.map(container => container.intoInfo()),
       resourcesSum: {
         requestsCpuMillis: UnitUtil.parseCpuMillis("100m"),
         requestsMemoryBytes: UnitUtil.parseMemoryBytes("256Mi"),
@@ -61,7 +61,7 @@ Deno.test("Should parse job", async ({ step }) => {
       assertEquals(job.intoInfo(), {
         name: job.metadata.name,
         kind: job.kind,
-        containers: job.containers,
+        containers: job.containers.map(container => container.intoInfo()),
         resourcesSum: {
           requestsCpuMillis: 0,
           requestsMemoryBytes: 0,
