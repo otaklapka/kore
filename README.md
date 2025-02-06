@@ -17,8 +17,8 @@ CLI tool to parse and sum limits and requests from kubernetes YAMLs
 
 #### Pipe in relevant objects from namespace
 ```
-kubectl get deployments,hpa,sts,pvc,jobs -n my-namespace -o yaml | yq eval '.items[] | "---" + "\n" + (. | tostring)' - | kore
-
+kubectl get deployments,hpa,sts,pvc,jobs -n my-namespace -o yaml | yq eval '.items[] | "---" + "\n" + (. | tostring)' - > deployment.yaml
+kore deployment.yaml
 ```
 
 #### Parse one or more yaml files
