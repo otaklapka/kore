@@ -1,5 +1,17 @@
-import { ContainerResourceDefinition } from "./container_resource_definition.ts";
+import {
+  ContainerResourceDefinition,
+  containerResourceDefinitionSchema,
+} from "./container_resource_definition.ts";
 import { ContainerInfo, ToJson } from "../types.ts";
+import { z } from "zod";
+
+export const containerSchema = z.object({
+  name: z.string(),
+  resources: z.object({
+    requests: containerResourceDefinitionSchema,
+    limits: containerResourceDefinitionSchema,
+  }).optional().nullable(),
+});
 
 export class Container implements ToJson {
   constructor(
@@ -8,25 +20,19 @@ export class Container implements ToJson {
     public readonly limits: ContainerResourceDefinition,
   ) {}
 
-  static from(data: any): Container {
-    if (
-      typeof data === "object" &&
-      typeof data.name === "string" &&
-      (!data.resources || typeof data.resources === "object") &&
-      (!data.resources?.requests ||
-        typeof data.resources?.requests === "object") &&
-      (!data.resources?.limits || typeof data.resources?.limits === "object")
-    ) {
-      const requests = ContainerResourceDefinition.fromRequests(
-        data.resources?.requests,
-      );
-      const limits = ContainerResourceDefinition.fromLimits(
-        data.resources?.limits,
-      );
-      return new Container(data.name, requests, limits);
-    }
+  static from(data: unknown): Container {
+    const containerObj: z.infer<typeof containerSchema> = containerSchema.parse(
+      data,
+    );
 
-    throw new Error("Invalid input data");
+    const requests = ContainerResourceDefinition.fromRequests(
+      containerObj.resources?.requests,
+    );
+    const limits = ContainerResourceDefinition.fromLimits(
+      containerObj.resources?.limits,
+    );
+
+    return new Container(containerObj.name, requests, limits);
   }
 
   public toJSON(): ContainerInfo {

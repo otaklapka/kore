@@ -1,4 +1,11 @@
 import { Scalable } from "./scalable.ts";
+import { z } from "zod";
+import { Kind } from "../types.ts";
+
+export const scaleTargetRefSchema = z.object({
+  kind: z.enum([Kind.Deployment, Kind.StatefulSet]),
+  name: z.string(),
+});
 
 export class ScaleTargetRef {
   constructor(
@@ -6,15 +13,11 @@ export class ScaleTargetRef {
     public readonly name: string,
   ) {}
 
-  public static from(data: any): ScaleTargetRef {
-    if (
-      typeof data === "object" &&
-      typeof data.kind === "string" &&
-      typeof data.name === "string"
-    ) {
-      return new ScaleTargetRef(data.kind, data.name);
-    }
-    throw new Error("Invalid scale target ref object");
+  public static from(data: unknown): ScaleTargetRef {
+    const scaleTargetRefObj: z.infer<typeof scaleTargetRefSchema> =
+      scaleTargetRefSchema.parse(data);
+
+    return new ScaleTargetRef(scaleTargetRefObj.kind, scaleTargetRefObj.name);
   }
 
   public match(target: Scalable): boolean {

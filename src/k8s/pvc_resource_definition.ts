@@ -1,22 +1,22 @@
 import { UnitUtil } from "../util/unit_util.ts";
-import { ContainerResourceDefinition } from "./container_resource_definition.ts";
+import { z } from "zod";
+
+export const pvcResourceDefinitionSchema = z.object({
+  storage: z.string(),
+});
 
 export class PvcResourceDefinition {
   constructor(
     public readonly storageBytes: number,
   ) {
   }
-  static from(data: any): PvcResourceDefinition {
-    if (
-      typeof data === "object" &&
-      typeof data.storage === "string"
-    ) {
-      return new PvcResourceDefinition(
-        UnitUtil.parseMemoryBytes(data.storage),
-      );
-    }
+  static from(data: unknown): PvcResourceDefinition {
+    const pvcObj: z.infer<typeof pvcResourceDefinitionSchema> =
+      pvcResourceDefinitionSchema.parse(data);
 
-    throw new Error("Invalid pvc resource definition object");
+    return new PvcResourceDefinition(
+      UnitUtil.parseMemoryBytes(pvcObj.storage),
+    );
   }
 
   public add(other: PvcResourceDefinition): PvcResourceDefinition {

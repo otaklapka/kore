@@ -1,7 +1,24 @@
-import { Metadata } from "./metadata.ts";
-import { Container } from "./container.ts";
+import { Metadata, metadataSchema } from "./metadata.ts";
+import { Container, containerSchema } from "./container.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { JobInfo, Kind, ToJson } from "../types.ts";
+import { z } from "zod";
+
+export const cronJobSchema = z.object({
+  kind: z.enum([Kind.CronJob]),
+  metadata: metadataSchema,
+  spec: z.object({
+    jobTemplate: z.object({
+      spec: z.object({
+        template: z.object({
+          spec: z.object({
+            containers: z.array(containerSchema),
+          }),
+        }),
+      }),
+    }),
+  }),
+});
 
 export class CronJob extends IntoResourceAccumulator implements ToJson {
   public readonly kind = Kind.CronJob;
@@ -20,22 +37,13 @@ export class CronJob extends IntoResourceAccumulator implements ToJson {
     return 1;
   }
 
-  static from(data: any): CronJob {
-    if (
-      typeof data === "object" &&
-      data.kind === Kind.CronJob &&
-      Array.isArray(data.spec?.jobTemplate?.spec?.template?.spec?.containers)
-    ) {
-      const metadata = Metadata.from(data.metadata);
-      const containers =
-        (data.spec.jobTemplate.spec.template.spec.containers as Array<
-          Record<string, any>
-        >)
-          .map((container) => Container.from(container));
-      return new CronJob(metadata, containers);
-    }
+  static from(data: unknown): CronJob {
+    const cronJobObj: z.infer<typeof cronJobSchema> = cronJobSchema.parse(data);
 
-    throw new Error("Invalid cron job object");
+    const metadata = Metadata.from(cronJobObj.metadata);
+    const containers = cronJobObj.spec.jobTemplate.spec.template.spec.containers
+      .map((container) => Container.from(container));
+    return new CronJob(metadata, containers);
   }
 
   public toJSON(): JobInfo {

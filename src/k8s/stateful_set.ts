@@ -1,9 +1,31 @@
-import { Metadata } from "./metadata.ts";
-import { Container } from "./container.ts";
+import { Metadata, metadataSchema } from "./metadata.ts";
+import { Container, containerSchema } from "./container.ts";
 import { Pvc } from "./pvc.ts";
-import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { Kind, StatefulSetInfo, ToJson } from "../types.ts";
 import { Scalable } from "./scalable.ts";
+import { z } from "zod";
+import { pvcResourceDefinitionSchema } from "./pvc_resource_definition.ts";
+
+export const statefulSetSchema = z.object({
+  kind: z.enum([Kind.StatefulSet]),
+  metadata: metadataSchema,
+  spec: z.object({
+    replicas: z.number().optional(),
+    template: z.object({
+      spec: z.object({
+        containers: z.array(containerSchema),
+      }),
+    }),
+    volumeClaimTemplates: z.array(z.object({
+      metadata: metadataSchema,
+      spec: z.object({
+        resources: z.object({
+          requests: pvcResourceDefinitionSchema,
+        }),
+      }),
+    })).optional().nullable(),
+  }),
+});
 
 export class StatefulSet extends Scalable implements ToJson {
   public readonly kind = Kind.StatefulSet;
@@ -24,28 +46,17 @@ export class StatefulSet extends Scalable implements ToJson {
     return this.pvcTemplates;
   }
 
-  static from(data: any): StatefulSet {
-    if (
-      typeof data === "object" &&
-      data.kind === Kind.StatefulSet &&
-      Array.isArray(data.spec?.template?.spec?.containers) &&
-      (!data.spec?.volumeClaimTemplates ||
-        Array.isArray(data.spec?.volumeClaimTemplates))
-    ) {
-      const metadata = Metadata.from(data.metadata);
-      const replicas = typeof data.spec?.replicas === "number"
-        ? data.spec?.replicas
-        : undefined;
-      const containers =
-        (data.spec.template.spec.containers as Array<Record<string, any>>)
-          .map((container) => Container.from(container));
-      const pvcs =
-        ((data.spec?.volumeClaimTemplates || []) as Array<Record<string, any>>)
-          .map((pvc) => Pvc.from({ kind: "PersistentVolumeClaim", ...pvc }));
-      return new StatefulSet(metadata, containers, replicas, pvcs);
-    }
+  static from(data: unknown): StatefulSet {
+    const statefulSetObj: z.infer<typeof statefulSetSchema> = statefulSetSchema
+      .parse(data);
 
-    throw new Error("Invalid stateful set object");
+    const metadata = Metadata.from(statefulSetObj.metadata);
+    const replicas = statefulSetObj.spec.replicas;
+    const containers = statefulSetObj.spec.template.spec.containers
+      .map((container) => Container.from(container));
+    const pvcs = (statefulSetObj.spec.volumeClaimTemplates || [])
+      .map((pvc) => Pvc.from({ kind: "PersistentVolumeClaim", ...pvc }));
+    return new StatefulSet(metadata, containers, replicas, pvcs);
   }
 
   public toJSON(): StatefulSetInfo {

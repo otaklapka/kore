@@ -1,5 +1,11 @@
 import { ContainerResourceDefinitionInfo, ToJson } from "../types.ts";
 import { UnitUtil } from "../util/unit_util.ts";
+import { z } from "zod";
+
+export const containerResourceDefinitionSchema = z.object({
+  memory: z.string().optional(),
+  cpu: z.string().or(z.number()).optional(),
+}).optional().nullable();
 
 export class ContainerResourceDefinition implements ToJson {
   constructor(
@@ -7,35 +13,32 @@ export class ContainerResourceDefinition implements ToJson {
     public readonly memoryBytes?: number,
   ) {}
 
-  static fromRequests(data: any): ContainerResourceDefinition {
+  static fromRequests(data: unknown): ContainerResourceDefinition {
     return this.from(data, 0);
   }
 
-  static fromLimits(data: any): ContainerResourceDefinition {
+  static fromLimits(data: unknown): ContainerResourceDefinition {
     return this.from(data, undefined);
   }
 
   static from(
-    data: any,
+    data: unknown,
     defaultValue: 0 | undefined,
   ): ContainerResourceDefinition {
-    if (
-      (!data?.cpu ||
-        (typeof data?.cpu === "string" || typeof data?.cpu === "number")) &&
-      (!data?.memory ||
-        (typeof data?.memory === "string" || typeof data?.memory === "number"))
-    ) {
-      const cpu = data?.cpu
-        ? UnitUtil.parseCpuMillis(data.cpu.toString())
-        : defaultValue;
-      const memory = data?.memory
-        ? UnitUtil.parseMemoryBytes(data.memory.toString())
-        : defaultValue;
+    const containerResourceDefinitionObj: z.infer<
+      typeof containerResourceDefinitionSchema
+    > = containerResourceDefinitionSchema.parse(data);
 
-      return new ContainerResourceDefinition(cpu, memory);
-    }
+    const cpu = containerResourceDefinitionObj?.cpu
+      ? UnitUtil.parseCpuMillis(containerResourceDefinitionObj.cpu.toString())
+      : defaultValue;
+    const memory = containerResourceDefinitionObj?.memory
+      ? UnitUtil.parseMemoryBytes(
+        containerResourceDefinitionObj.memory.toString(),
+      )
+      : defaultValue;
 
-    throw new Error("Invalid input data");
+    return new ContainerResourceDefinition(cpu, memory);
   }
 
   public add(other: ContainerResourceDefinition): ContainerResourceDefinition {

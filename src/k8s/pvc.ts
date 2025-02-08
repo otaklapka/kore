@@ -1,9 +1,22 @@
-import { PvcResourceDefinition } from "./pvc_resource_definition.ts";
-import { Metadata } from "./metadata.ts";
+import {
+  PvcResourceDefinition,
+  pvcResourceDefinitionSchema,
+} from "./pvc_resource_definition.ts";
+import { Metadata, metadataSchema } from "./metadata.ts";
 import { Kind, PvcInfo, ToJson } from "../types.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
 import { Container } from "./container.ts";
-import { ResourceAccumulator } from "../resource_accumulator.ts";
+import { z } from "zod";
+
+export const pvcSchema = z.object({
+  kind: z.enum([Kind.PersistentVolumeClaim]),
+  metadata: metadataSchema,
+  spec: z.object({
+    resources: z.object({
+      requests: pvcResourceDefinitionSchema,
+    }),
+  }),
+});
 
 export class Pvc extends IntoResourceAccumulator implements ToJson {
   public readonly kind = Kind.PersistentVolumeClaim;
@@ -26,19 +39,14 @@ export class Pvc extends IntoResourceAccumulator implements ToJson {
     return [this];
   }
 
-  static from(data: any): Pvc {
-    if (
-      typeof data === "object" &&
-      data.kind === Kind.PersistentVolumeClaim
-    ) {
-      const metadata = Metadata.from(data.metadata);
-      const requests = PvcResourceDefinition.from(
-        data.spec?.resources?.requests,
-      );
-      return new Pvc(metadata, requests);
-    }
+  static from(data: unknown): Pvc {
+    const pvcObj: z.infer<typeof pvcSchema> = pvcSchema.parse(data);
 
-    throw new Error("Invalid pvc object");
+    const metadata = Metadata.from(pvcObj.metadata);
+    const requests = PvcResourceDefinition.from(
+      pvcObj.spec.resources.requests,
+    );
+    return new Pvc(metadata, requests);
   }
 
   public toJSON(): PvcInfo {
