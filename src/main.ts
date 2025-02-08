@@ -4,7 +4,7 @@ import { Options, Output } from "./types.ts";
 import { Kore } from "./kore.ts";
 import { KoreTable } from "./kore_table.ts";
 
-const parseStdIn = async (): Promise<object[] | never> => {
+const parseStdIn = async (): Promise<unknown[] | never> => {
   const decoder = new TextDecoder();
   let stdIn: string | undefined = undefined;
   for await (const chunk of Deno.stdin.readable) {
@@ -25,7 +25,7 @@ const parseStdIn = async (): Promise<object[] | never> => {
   return Deno.exit(1);
 };
 
-const parseInputFiles = async (files: string[]): Promise<object[]> => {
+const parseInputFiles = async (files: string[]): Promise<unknown[]> => {
   const fileObjs = await Promise.all(
     files.map(async (file) => {
       const fileContents = await Deno.readTextFile(file).catch(() => {
@@ -34,7 +34,7 @@ const parseInputFiles = async (files: string[]): Promise<object[]> => {
       });
 
       try {
-        return parseAll(fileContents) as object[];
+        return parseAll(fileContents) as unknown[];
       } catch (err) {
         console.error(
           `Failed to parse yaml file ${file}. ${
@@ -55,7 +55,7 @@ const run = async (options: Options, ...args: string[]): Promise<void> => {
     Deno.exit(1);
   }
 
-  let docs: object[] = Deno.stdin.isTerminal()
+  const docs: unknown[] = Deno.stdin.isTerminal()
     ? await parseInputFiles(args)
     : await parseStdIn();
 
@@ -63,10 +63,10 @@ const run = async (options: Options, ...args: string[]): Promise<void> => {
 
   switch (options.output) {
     case Output.Json:
-      console.log(JSON.stringify(kore.intoInfo()));
+      console.log(JSON.stringify(kore.toJSON()));
       break;
     default:
-      new KoreTable(kore.intoInfo()).printTable();
+      new KoreTable(kore.toJSON()).printTable();
       break;
   }
 };

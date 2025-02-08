@@ -10,11 +10,11 @@ import { Scalable } from "./k8s/scalable.ts";
 
 export class Kore implements ToJson {
   private readonly kubeObjects: KubeObject[];
-  constructor(docs: Record<string, any>[]) {
+  constructor(docs: unknown[]) {
     this.kubeObjects = this.parse(docs);
   }
 
-  private parse(objects: Record<string, any>[]): KubeObject[] {
+  private parse(objects: unknown[]): KubeObject[] {
     return objects.reduce((acu: KubeObject[], obj) => {
       for (const parser of [Deployment, StatefulSet, CronJob, Pvc, Hpa, Job]) {
         try {
