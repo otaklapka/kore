@@ -2,13 +2,13 @@ import { Hpa } from "./k8s/hpa.ts";
 import { Deployment } from "./k8s/deployment.ts";
 import { StatefulSet } from "./k8s/stateful_set.ts";
 import { CronJob } from "./k8s/cron_job.ts";
-import { InfoObject, Kind, KoreInfo, KubeObject } from "./types.ts";
+import { InfoObject, Kind, KoreInfo, KubeObject, ToJson } from "./types.ts";
 import { Pvc } from "./k8s/pvc.ts";
 import { ResourceAccumulator } from "./resource_accumulator.ts";
 import { Job } from "./k8s/job.ts";
 import { Scalable } from "./k8s/scalable.ts";
 
-export class Kore {
+export class Kore implements ToJson {
   private readonly kubeObjects: KubeObject[];
   constructor(docs: Record<string, any>[]) {
     this.kubeObjects = this.parse(docs);
@@ -26,7 +26,7 @@ export class Kore {
     }, []);
   }
 
-  public intoInfo(): KoreInfo {
+  public toJSON(): KoreInfo {
     const hpas = this.kubeObjects.filter((kubeObject) =>
       kubeObject.kind === Kind.HorizontalPodAutoscaler
     );
@@ -35,7 +35,7 @@ export class Kore {
 
     const infoObjects = this.kubeObjects.reduce(
       (acc: InfoObject[], kubeObj) => {
-        if ("intoInfo" in kubeObj) {
+        if ("toJSON" in kubeObj) {
           if (kubeObj instanceof Scalable) {
             const matchedHpa = hpas.find((hpa) => hpa.match(kubeObj));
             if (matchedHpa) {
@@ -43,7 +43,7 @@ export class Kore {
             }
           }
           kubeObj.intoResourceAccumulator(resourcesAccumulator);
-          acc.push(kubeObj.intoInfo());
+          acc.push(kubeObj.toJSON());
         }
         return acc;
       },

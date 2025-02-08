@@ -34,10 +34,10 @@ Deno.test("Should parse cron job", async ({ step }) => {
     assert(cronJob instanceof CronJob);
     assert(cronJob.containers.length === 1);
     assert(cronJob.containers[0] instanceof Container);
-    assertEquals(cronJob.intoInfo(), {
+    assertEquals(cronJob.toJSON(), {
       name: cronJob.metadata.name,
       kind: cronJob.kind,
-      containers: cronJob.containers.map((container) => container.intoInfo()),
+      containers: cronJob.containers.map((container) => container.toJSON()),
       resourcesSum: {
         requestsCpuMillis: UnitUtil.parseCpuMillis("100m"),
         requestsMemoryBytes: UnitUtil.parseMemoryBytes("256Mi"),
@@ -64,10 +64,10 @@ Deno.test("Should parse cron job", async ({ step }) => {
     `);
 
       const cronJob = CronJob.from(doc);
-      assertEquals(cronJob.intoInfo(), {
+      assertEquals(cronJob.toJSON(), {
         name: cronJob.metadata.name,
         kind: cronJob.kind,
-        containers: cronJob.containers.map((container) => container.intoInfo()),
+        containers: cronJob.containers.map((container) => container.toJSON()),
         resourcesSum: {
           requestsCpuMillis: 0,
           requestsMemoryBytes: 0,

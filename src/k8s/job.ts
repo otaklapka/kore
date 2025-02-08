@@ -1,9 +1,9 @@
 import { Metadata } from "./metadata.ts";
 import { Container } from "./container.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
-import { JobInfo, Kind } from "../types.ts";
+import { JobInfo, Kind, ToJson } from "../types.ts";
 
-export class Job extends IntoResourceAccumulator {
+export class Job extends IntoResourceAccumulator implements ToJson {
   public readonly kind = Kind.Job;
   constructor(
     public readonly metadata: Metadata,
@@ -37,7 +37,7 @@ export class Job extends IntoResourceAccumulator {
     throw new Error("Invalid cron job object");
   }
 
-  public intoInfo(): JobInfo {
+  public toJSON(): JobInfo {
     const { cpuMillis: limitsCpuMillis, memoryBytes: limitsMemoryBytes } = this
       .getContainerLimitsSum().multiply(this.getMaxReplicas());
     const { cpuMillis: requestsCpuMillis, memoryBytes: requestsMemoryBytes } =
@@ -45,7 +45,7 @@ export class Job extends IntoResourceAccumulator {
 
     return {
       name: this.metadata.name,
-      containers: this.containers.map((container) => container.intoInfo()),
+      containers: this.containers.map((container) => container.toJSON()),
       kind: Kind.Job,
       resourcesSum: {
         limitsCpuMillis,

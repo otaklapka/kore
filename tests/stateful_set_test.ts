@@ -44,15 +44,13 @@ Deno.test("Should parse stateful set", async ({ step }) => {
     const containerRequestSum = statefulSet.getContainerRequestsSum().multiply(
       statefulSet.replicas,
     );
-    assertEquals(statefulSet.intoInfo(), {
+    assertEquals(statefulSet.toJSON(), {
       name: statefulSet.metadata.name,
       minReplicas: statefulSet.replicas,
       maxReplicas: statefulSet.replicas,
-      containers: statefulSet.containers.map((container) =>
-        container.intoInfo()
-      ),
+      containers: statefulSet.containers.map((container) => container.toJSON()),
       kind: Kind.StatefulSet,
-      pvcs: statefulSet.pvcTemplates.map((pvc) => pvc.intoInfo()),
+      pvcs: statefulSet.pvcTemplates.map((pvc) => pvc.toJSON()),
       resourcesSum: {
         limitsCpuMillis: containerLimitSum.cpuMillis,
         limitsMemoryBytes: containerLimitSum.memoryBytes,
@@ -81,13 +79,11 @@ Deno.test("Should parse stateful set", async ({ step }) => {
     assertEquals(statefulSet.replicas, 1);
     assert(statefulSet.containers.length === 1);
     assert(statefulSet.pvcTemplates.length === 0);
-    assertEquals(statefulSet.intoInfo(), {
+    assertEquals(statefulSet.toJSON(), {
       name: statefulSet.metadata.name,
       minReplicas: statefulSet.replicas,
       maxReplicas: statefulSet.replicas,
-      containers: statefulSet.containers.map((container) =>
-        container.intoInfo()
-      ),
+      containers: statefulSet.containers.map((container) => container.toJSON()),
       kind: Kind.StatefulSet,
       pvcs: [],
       resourcesSum: {

@@ -1,7 +1,7 @@
-import { ContainerResourceDefinitionInfo } from "../types.ts";
+import { ContainerResourceDefinitionInfo, ToJson } from "../types.ts";
 import { UnitUtil } from "../util/unit_util.ts";
 
-export class ContainerResourceDefinition {
+export class ContainerResourceDefinition implements ToJson {
   constructor(
     public readonly cpuMillis?: number,
     public readonly memoryBytes?: number,
@@ -59,7 +59,7 @@ export class ContainerResourceDefinition {
     return new ContainerResourceDefinition(cpu, memory);
   }
 
-  public intoInfo(): ContainerResourceDefinitionInfo {
+  public toJSON(): ContainerResourceDefinitionInfo {
     return {
       cpuMillis: this.cpuMillis,
       memoryBytes: this.memoryBytes,

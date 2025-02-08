@@ -2,10 +2,10 @@ import { Metadata } from "./metadata.ts";
 import { Container } from "./container.ts";
 import { Pvc } from "./pvc.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
-import { Kind, StatefulSetInfo } from "../types.ts";
+import { Kind, StatefulSetInfo, ToJson } from "../types.ts";
 import { Scalable } from "./scalable.ts";
 
-export class StatefulSet extends Scalable {
+export class StatefulSet extends Scalable implements ToJson {
   public readonly kind = Kind.StatefulSet;
   constructor(
     public readonly metadata: Metadata,
@@ -48,7 +48,7 @@ export class StatefulSet extends Scalable {
     throw new Error("Invalid stateful set object");
   }
 
-  public intoInfo(): StatefulSetInfo {
+  public toJSON(): StatefulSetInfo {
     const { cpuMillis: limitsCpuMillis, memoryBytes: limitsMemoryBytes } = this
       .getContainerLimitsSum().multiply(this.getMaxReplicas());
     const { cpuMillis: requestsCpuMillis, memoryBytes: requestsMemoryBytes } =
@@ -60,9 +60,9 @@ export class StatefulSet extends Scalable {
       name: this.metadata.name,
       minReplicas: this.hpa ? this.hpa.minReplicas : this.replicas,
       maxReplicas: this.getMaxReplicas(),
-      containers: this.containers.map((container) => container.intoInfo()),
+      containers: this.containers.map((container) => container.toJSON()),
       kind: Kind.StatefulSet,
-      pvcs: this.pvcTemplates.map((pvc) => pvc.intoInfo()),
+      pvcs: this.pvcTemplates.map((pvc) => pvc.toJSON()),
       resourcesSum: {
         limitsCpuMillis,
         limitsMemoryBytes,

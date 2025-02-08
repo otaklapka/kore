@@ -35,12 +35,10 @@ Deno.test("Should parse deployment", async ({ step }) => {
     assert(deployment instanceof Deployment);
     assert(deployment.containers.length === 1);
     assert(deployment.containers[0] instanceof Container);
-    assertEquals(deployment.intoInfo(), {
+    assertEquals(deployment.toJSON(), {
       name: deployment.metadata.name,
       kind: Kind.Deployment,
-      containers: deployment.containers.map((container) =>
-        container.intoInfo()
-      ),
+      containers: deployment.containers.map((container) => container.toJSON()),
       minReplicas: 3,
       maxReplicas: 3,
       resourcesSum: {
@@ -71,11 +69,11 @@ Deno.test("Should parse deployment", async ({ step }) => {
       assert(deployment instanceof Deployment);
       assert(deployment.containers.length === 1);
       assert(deployment.containers[0] instanceof Container);
-      assertEquals(deployment.intoInfo(), {
+      assertEquals(deployment.toJSON(), {
         name: deployment.metadata.name,
         kind: Kind.Deployment,
         containers: deployment.containers.map((container) =>
-          container.intoInfo()
+          container.toJSON()
         ),
         minReplicas: 1,
         maxReplicas: 1,
@@ -118,12 +116,10 @@ Deno.test("Should parse deployment", async ({ step }) => {
         1,
       ),
     );
-    assertEquals(deployment.intoInfo(), {
+    assertEquals(deployment.toJSON(), {
       name: deployment.metadata.name,
       kind: Kind.Deployment,
-      containers: deployment.containers.map((container) =>
-        container.intoInfo()
-      ),
+      containers: deployment.containers.map((container) => container.toJSON()),
       minReplicas: 1,
       maxReplicas: 5,
       resourcesSum: {

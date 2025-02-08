@@ -11,7 +11,7 @@ Deno.test("Should extract resources from files", async ({ step }) => {
     ) as object[];
 
     const kore = new Kore(docs);
-    assertEquals(kore.intoInfo(), {
+    assertEquals(kore.toJSON(), {
       "objects": [
         {
           "name": "my-cronjob",
@@ -64,7 +64,7 @@ Deno.test("Should extract resources from files", async ({ step }) => {
     const noHpaRequestsCpuMillis = UnitUtil.parseCpuMillis("250m") * 3;
     const noHpaRequestsMemoryBytes = UnitUtil.parseMemoryBytes("512Mi") * 3;
 
-    assertEquals(kore.intoInfo(), {
+    assertEquals(kore.toJSON(), {
       "objects": [
         {
           "name": "my-deployment-with-hpa",
@@ -152,7 +152,7 @@ Deno.test("Should extract resources from files", async ({ step }) => {
     ) as object[];
 
     const kore = new Kore(docs);
-    assertEquals(kore.intoInfo(), {
+    assertEquals(kore.toJSON(), {
       "objects": [
         {
           "name": "pi-job",
@@ -241,7 +241,7 @@ Deno.test("Should extract resources from files", async ({ step }) => {
     const noHpaRequestsMemoryBytes = UnitUtil.sumMemory("512Mi", "128Mi") * 3;
     const noHpaStorageMemoryBytes = UnitUtil.parseMemoryBytes("5Gi") * 3;
 
-    assertEquals(kore.intoInfo(), {
+    assertEquals(kore.toJSON(), {
       "objects": [
         {
           "name": "my-statefulset-with-hpa",

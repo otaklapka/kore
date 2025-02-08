@@ -30,10 +30,10 @@ Deno.test("Should parse job", async ({ step }) => {
     assert(job instanceof Job);
     assert(job.containers.length === 1);
     assert(job.containers[0] instanceof Container);
-    assertEquals(job.intoInfo(), {
+    assertEquals(job.toJSON(), {
       name: job.metadata.name,
       kind: job.kind,
-      containers: job.containers.map((container) => container.intoInfo()),
+      containers: job.containers.map((container) => container.toJSON()),
       resourcesSum: {
         requestsCpuMillis: UnitUtil.parseCpuMillis("100m"),
         requestsMemoryBytes: UnitUtil.parseMemoryBytes("256Mi"),
@@ -58,10 +58,10 @@ Deno.test("Should parse job", async ({ step }) => {
     `);
 
       const job = Job.from(doc);
-      assertEquals(job.intoInfo(), {
+      assertEquals(job.toJSON(), {
         name: job.metadata.name,
         kind: job.kind,
-        containers: job.containers.map((container) => container.intoInfo()),
+        containers: job.containers.map((container) => container.toJSON()),
         resourcesSum: {
           requestsCpuMillis: 0,
           requestsMemoryBytes: 0,

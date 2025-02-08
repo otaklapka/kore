@@ -1,11 +1,11 @@
 import { Metadata } from "./metadata.ts";
 import { Container } from "./container.ts";
 import { IntoResourceAccumulator } from "./into_resource_accumulator.ts";
-import { DeploymentInfo, Kind } from "../types.ts";
+import { DeploymentInfo, Kind, ToJson } from "../types.ts";
 import { Hpa } from "./hpa.ts";
 import { Scalable } from "./scalable.ts";
 
-export class Deployment extends Scalable {
+export class Deployment extends Scalable implements ToJson {
   public readonly kind = Kind.Deployment;
 
   constructor(
@@ -39,7 +39,7 @@ export class Deployment extends Scalable {
     return this.containers;
   }
 
-  public intoInfo(): DeploymentInfo {
+  public toJSON(): DeploymentInfo {
     const { cpuMillis: limitsCpuMillis, memoryBytes: limitsMemoryBytes } = this
       .getContainerLimitsSum().multiply(this.getMaxReplicas());
     const { cpuMillis: requestsCpuMillis, memoryBytes: requestsMemoryBytes } =
@@ -49,7 +49,7 @@ export class Deployment extends Scalable {
       name: this.metadata.name,
       minReplicas: this.hpa ? this.hpa.minReplicas : this.replicas,
       maxReplicas: this.getMaxReplicas(),
-      containers: this.containers.map((container) => container.intoInfo()),
+      containers: this.containers.map((container) => container.toJSON()),
       kind: Kind.Deployment,
       resourcesSum: {
         limitsCpuMillis,

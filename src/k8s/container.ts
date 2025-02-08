@@ -1,7 +1,7 @@
 import { ContainerResourceDefinition } from "./container_resource_definition.ts";
-import { ContainerInfo } from "../types.ts";
+import { ContainerInfo, ToJson } from "../types.ts";
 
-export class Container {
+export class Container implements ToJson {
   constructor(
     public readonly name: string,
     public readonly requests: ContainerResourceDefinition,
@@ -29,11 +29,11 @@ export class Container {
     throw new Error("Invalid input data");
   }
 
-  public intoInfo(): ContainerInfo {
+  public toJSON(): ContainerInfo {
     return {
       name: this.name,
-      requests: this.requests.intoInfo(),
-      limits: this.limits.intoInfo(),
+      requests: this.requests.toJSON(),
+      limits: this.limits.toJSON(),
     };
   }
 }

@@ -18,9 +18,8 @@ export type Options = {
 
 export type KubeObject = Deployment | StatefulSet | CronJob | Job | Pvc | Hpa;
 
-export interface RefTarget {
-  kind: string;
-  metadata: Metadata;
+export interface ToJson {
+  toJSON(): object;
 }
 
 export interface ContainerResourceDefinitionInfo {
