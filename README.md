@@ -2,7 +2,8 @@
 
 ### (kubernetes object resources)
 
-CLI tool to parse and sum limits and requests from kubernetes YAMLs
+CLI tool to parse and sum limits and requests from kubernetes YAMLs. Designed
+for easier resource quota estimation for kubernetes projects.
 
 ![kore](data/img.png)
 
