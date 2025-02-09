@@ -27,3 +27,12 @@ kore deployment.yaml
 ```
 kore first-deployment.yml second-deployment.yml
 ```
+
+### Flags
+
+| Flag          | Description                                 |
+| ------------- | ------------------------------------------- |
+| -h, --help    | show options and description                |
+| -V, --version | Show the version number for this program    |
+| -o, --output  | `json`,`table` output format                |
+| -v, --verbose | Print extended info about object processing |
