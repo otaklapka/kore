@@ -11,9 +11,13 @@ export enum Output {
   Table = "table",
 }
 
-export type Options = {
+export type CliOptions = {
   verbose?: boolean | undefined;
   output: Output;
+};
+
+export type KoreOptions = {
+  verbose?: boolean;
 };
 
 export type KubeObject = Deployment | StatefulSet | CronJob | Job | Pvc | Hpa;

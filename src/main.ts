@@ -1,10 +1,10 @@
 import { Command, EnumType } from "@cliffy/command";
 import { parseAll } from "@std/yaml";
-import { Options, Output } from "./types.ts";
+import { CliOptions, KoreOptions, Output } from "./types.ts";
 import { Kore } from "./kore.ts";
 import { KoreTable } from "./kore_table.ts";
 
-const parseStdIn = async (): Promise<unknown[] | never> => {
+const parseStdInOrExit = async (): Promise<unknown[] | never> => {
   const decoder = new TextDecoder();
   let stdIn: string | undefined = undefined;
   for await (const chunk of Deno.stdin.readable) {
@@ -25,7 +25,7 @@ const parseStdIn = async (): Promise<unknown[] | never> => {
   return Deno.exit(1);
 };
 
-const parseInputFiles = async (files: string[]): Promise<unknown[]> => {
+const parseInputFilesOrExit = async (files: string[]): Promise<unknown[]> => {
   const fileObjs = await Promise.all(
     files.map(async (file) => {
       const fileContents = await Deno.readTextFile(file).catch(() => {
@@ -49,17 +49,21 @@ const parseInputFiles = async (files: string[]): Promise<unknown[]> => {
   return fileObjs.flat();
 };
 
-const run = async (options: Options, ...args: string[]): Promise<void> => {
+const run = async (options: CliOptions, ...args: string[]): Promise<void> => {
   if (Deno.stdin.isTerminal() && !args.length) {
     console.error("No input");
     Deno.exit(1);
   }
 
   const docs: unknown[] = Deno.stdin.isTerminal()
-    ? await parseInputFiles(args)
-    : await parseStdIn();
+    ? await parseInputFilesOrExit(args)
+    : await parseStdInOrExit();
 
-  const kore = new Kore(docs);
+  const koreOptions: KoreOptions = {
+    verbose: options.verbose,
+  };
+
+  const kore = new Kore(docs, koreOptions);
 
   switch (options.output) {
     case Output.Json:
@@ -83,5 +87,5 @@ await new Command()
   })
   .option("-v, --verbose", "Enable verbose output")
   .arguments("[files...]")
-  .action((options: Options, ...args: string[]) => run(options, ...args))
+  .action((options: CliOptions, ...args: string[]) => run(options, ...args))
   .parse(Deno.args);
