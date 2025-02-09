@@ -1,0 +1,32 @@
+name: full-defined-container
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "200m"
+---
+name: default-container
+---
+name: requests-container
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+---
+name: limits-container
+resources:
+  limits:
+    memory: "512Mi"
+    cpu: "200m"
+---
+name: partial-requests-container
+resources:
+  requests:
+    memory: "256Mi"
+---
+name: partial-limits-container
+resources:
+  limits:
+    cpu: "200m"

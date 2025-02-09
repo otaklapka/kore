@@ -60,3 +60,32 @@ Deno.test("Should parse cpu units", async ({ step }) => {
     assertEquals(UnitUtil.parseCpuMillis("5"), 5);
   });
 });
+
+Deno.test("Should sum cpu units", async ({ step }) => {
+  await step("mixed units", () => {
+    assertEquals(UnitUtil.sumCpu("5", "0.25", "500m"), 5.75);
+  });
+});
+
+Deno.test("Should sum memory units", async ({ step }) => {
+  await step("mixed units", () => {
+    const vals = [
+      "1ki",
+      "1k",
+      "1Mi",
+      "1M",
+      "1Gi",
+      "1G",
+      "1Ti",
+      "1T",
+      "1Pi",
+      "1P",
+      "1Ei",
+      "1E",
+    ];
+    assertEquals(
+      UnitUtil.sumMemory(...vals),
+      vals.reduce((acc, val) => UnitUtil.parseMemoryBytes(val) + acc, 0),
+    );
+  });
+});

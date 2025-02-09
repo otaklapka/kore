@@ -50,7 +50,7 @@ export class Deployment extends Scalable implements ToJson {
 
     return {
       name: this.metadata.name,
-      minReplicas: this.hpa ? this.hpa.minReplicas : this.replicas,
+      minReplicas: this.hpa ? this.hpa.minReplicas : 1,
       maxReplicas: this.getMaxReplicas(),
       containers: this.containers.map((container) => container.toJSON()),
       kind: Kind.Deployment,

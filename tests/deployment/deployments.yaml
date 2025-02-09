@@ -1,0 +1,91 @@
+# These are just test objects
+# contains only minimal structure to be parsable by app
+# not necessarily valid kubernetes objects
+
+kind: Deployment
+metadata:
+  name: full-defined-deployment
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+        - name: my-second-container
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+        - name: my-third-container
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: 1.25
+---
+kind: Deployment
+metadata:
+  name: default-containers-deployment
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+        - name: my-second-container
+---
+kind: Deployment
+metadata:
+  name: mixed-defined-containers-deployment
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+        - name: my-second-container
+---
+kind: Deployment
+metadata:
+  name: deployment-with-hpa
+spec:
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+---
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-hpa
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: deployment-with-hpa
+  minReplicas: 1
+  maxReplicas: 5

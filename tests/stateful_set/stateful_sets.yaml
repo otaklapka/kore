@@ -1,0 +1,111 @@
+# These are just test objects
+# contains only minimal structure to be parsable by app
+# not necessarily valid kubernetes objects
+
+kind: StatefulSet
+metadata:
+  name: full-defined-statefulset
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+        - name: my-second-container
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+        - name: my-third-container
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: 1.25
+  volumeClaimTemplates:
+    - metadata:
+        name: my-pvc
+      spec:
+        resources:
+          requests:
+            storage: "5Gi"
+    - metadata:
+        name: my-second-pvc
+      spec:
+        resources:
+          requests:
+            storage: "50Mi"
+---
+kind: StatefulSet
+metadata:
+  name: default-containers-statefulset
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+        - name: my-second-container
+---
+kind: StatefulSet
+metadata:
+  name: mixed-defined-containers-statefulset
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+        - name: my-second-container
+---
+kind: StatefulSet
+metadata:
+  name: statefulset-with-hpa
+spec:
+  template:
+    spec:
+      containers:
+        - name: my-container
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+  volumeClaimTemplates:
+    - metadata:
+        name: my-pvc
+      spec:
+        resources:
+          requests:
+            storage: "5Gi"
+---
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-hpa
+spec:
+  scaleTargetRef:
+    kind: StatefulSet
+    name: statefulset-with-hpa
+  minReplicas: 1
+  maxReplicas: 5
