@@ -8,7 +8,15 @@ spec:
 ---
 kind: PersistentVolumeClaim
 metadata:
-  name: my-second-pvc
+  name: full-defined-statefulset-my-pvc
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+metadata:
+  name: full-defined-statefulset-my-second-pvc
 spec:
   resources:
     requests:

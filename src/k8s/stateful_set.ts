@@ -61,7 +61,9 @@ export class StatefulSet extends Scalable implements ToJson {
 
   public holdsPvc(pvc: Pvc): boolean {
     return this.getPvcs().some((pvcTemplate) =>
-      pvcTemplate.metadata.name === pvc.metadata.name
+      pvc.metadata.name.startsWith(
+        `${this.metadata.name}-${pvcTemplate.metadata.name}`,
+      )
     );
   }
 

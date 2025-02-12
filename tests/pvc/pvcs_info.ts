@@ -9,8 +9,16 @@ export const fullDefinedPvcInfo: PvcInfo = {
   },
 };
 
-export const fullDefinedSecondPvcInfo: PvcInfo = {
-  name: "my-second-pvc",
+export const fullDefinedStsMyPvcInfo: PvcInfo = {
+  name: "full-defined-statefulset-my-pvc",
+  kind: Kind.PersistentVolumeClaim,
+  resourcesSum: {
+    requestsStorageBytes: UnitUtil.parseMemoryBytes("5Gi"),
+  },
+};
+
+export const fullDefinedStsMySecondInfo: PvcInfo = {
+  name: "full-defined-statefulset-my-second-pvc",
   kind: Kind.PersistentVolumeClaim,
   resourcesSum: {
     requestsStorageBytes: UnitUtil.parseMemoryBytes("50Mi"),
