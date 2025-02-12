@@ -10,15 +10,15 @@ export const fullDefinedPvcInfo: PvcInfo = {
 };
 
 export const fullDefinedStsMyPvcInfo: PvcInfo = {
-  name: "full-defined-statefulset-my-pvc",
+  name: "my-pvc-full-defined-statefulset",
   kind: Kind.PersistentVolumeClaim,
   resourcesSum: {
     requestsStorageBytes: UnitUtil.parseMemoryBytes("5Gi"),
   },
 };
 
-export const fullDefinedStsMySecondInfo: PvcInfo = {
-  name: "full-defined-statefulset-my-second-pvc",
+export const fullDefinedStsMySecondPvcInfo: PvcInfo = {
+  name: "my-second-pvc-full-defined-statefulset",
   kind: Kind.PersistentVolumeClaim,
   resourcesSum: {
     requestsStorageBytes: UnitUtil.parseMemoryBytes("50Mi"),

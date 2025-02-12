@@ -8,7 +8,7 @@ spec:
 ---
 kind: PersistentVolumeClaim
 metadata:
-  name: full-defined-statefulset-my-pvc
+  name: my-pvc-full-defined-statefulset
 spec:
   resources:
     requests:
@@ -16,7 +16,7 @@ spec:
 ---
 kind: PersistentVolumeClaim
 metadata:
-  name: full-defined-statefulset-my-second-pvc
+  name: my-second-pvc-full-defined-statefulset
 spec:
   resources:
     requests:
