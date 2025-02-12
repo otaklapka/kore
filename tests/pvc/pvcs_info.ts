@@ -8,3 +8,19 @@ export const fullDefinedPvcInfo: PvcInfo = {
     requestsStorageBytes: UnitUtil.parseMemoryBytes("5Gi"),
   },
 };
+
+export const fullDefinedSecondPvcInfo: PvcInfo = {
+  name: "my-second-pvc",
+  kind: Kind.PersistentVolumeClaim,
+  resourcesSum: {
+    requestsStorageBytes: UnitUtil.parseMemoryBytes("50Mi"),
+  },
+};
+
+export const pvcNotMatchingAnyStsInfo: PvcInfo = {
+  name: "pvc-not-matching-sts",
+  kind: Kind.PersistentVolumeClaim,
+  resourcesSum: {
+    requestsStorageBytes: UnitUtil.parseMemoryBytes("100Mi"),
+  },
+};

@@ -59,6 +59,12 @@ export class StatefulSet extends Scalable implements ToJson {
     return new StatefulSet(metadata, containers, replicas, pvcs);
   }
 
+  public holdsPvc(pvc: Pvc): boolean {
+    return this.getPvcs().some((pvcTemplate) =>
+      pvcTemplate.metadata.name === pvc.metadata.name
+    );
+  }
+
   public toJSON(): StatefulSetInfo {
     const { cpuMillis: limitsCpuMillis, memoryBytes: limitsMemoryBytes } = this
       .getContainerLimitsSum().multiply(this.getMaxReplicas());

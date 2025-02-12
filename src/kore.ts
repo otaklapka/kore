@@ -59,10 +59,20 @@ export class Kore implements ToJson {
       kubeObject.kind === Kind.HorizontalPodAutoscaler
     );
 
+    const statefulSets = this.kubeObjects.filter((kubeObject) =>
+      kubeObject.kind === Kind.StatefulSet
+    );
+
     const resourcesAccumulator = new ResourceAccumulator();
 
     const infoObjects = this.kubeObjects.reduce(
       (acc: InfoObject[], kubeObj) => {
+        if (
+          kubeObj.kind === Kind.PersistentVolumeClaim &&
+          statefulSets.some((sts) => sts.holdsPvc(kubeObj))
+        ) {
+          return acc;
+        }
         if ("toJSON" in kubeObj) {
           if (kubeObj instanceof Scalable) {
             const matchedHpa = hpas.find((hpa) => hpa.match(kubeObj));

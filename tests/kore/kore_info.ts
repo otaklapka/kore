@@ -17,7 +17,7 @@ import {
   fullDefinedStatefulSetInfo,
   statefulSetWithHpaInfo,
 } from "../stateful_set/mod.ts";
-import { fullDefinedPvcInfo } from "../pvc/pvcs_info.ts";
+import { pvcNotMatchingAnyStsInfo } from "../pvc/pvcs_info.ts";
 
 const definedObjectsWithMemoryAndCpu = [
   multipleContainerCronJobInfo,
@@ -29,7 +29,7 @@ const definedObjectsWithMemoryAndCpu = [
 ];
 
 export const fullDefinedKoreInfo: KoreInfo = {
-  objects: [...definedObjectsWithMemoryAndCpu, fullDefinedPvcInfo],
+  objects: [...definedObjectsWithMemoryAndCpu, pvcNotMatchingAnyStsInfo],
   resourcesSum: {
     requestsCpuMillis: definedObjectsWithMemoryAndCpu.reduce(
       (acc, it) => it.resourcesSum.requestsCpuMillis + acc,
@@ -42,7 +42,7 @@ export const fullDefinedKoreInfo: KoreInfo = {
     requestsStorageBytes: [
       fullDefinedStatefulSetInfo,
       statefulSetWithHpaInfo,
-      fullDefinedPvcInfo,
+      pvcNotMatchingAnyStsInfo,
     ].reduce((acc, it) => it.resourcesSum.requestsStorageBytes + acc, 0),
     limitsCpuMillis: definedObjectsWithMemoryAndCpu.reduce(
       (acc, it) => it.resourcesSum.limitsCpuMillis! + acc,

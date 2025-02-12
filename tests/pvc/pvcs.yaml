@@ -5,3 +5,19 @@ spec:
   resources:
     requests:
       storage: 5Gi
+---
+kind: PersistentVolumeClaim
+metadata:
+  name: my-second-pvc
+spec:
+  resources:
+    requests:
+      storage: "50Mi"
+---
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-not-matching-sts
+spec:
+  resources:
+    requests:
+      storage: "100Mi"
