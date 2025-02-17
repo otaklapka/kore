@@ -6,6 +6,8 @@ import {
   defaultContainerJobInfo,
   fullDefinedJobDefinition,
   fullDefinedJobInfo,
+  jobSpawnedByCronjobDefinition,
+  jobSpawnedByCronjobInfo,
   mixedDefinedContainerJobDefinition,
   mixedDefinedContainersJobInfo,
   multipleContainerJobDefinition,
@@ -25,6 +27,7 @@ Deno.test("Job", async ({ step }) => {
       cronJob.containers.every((container) => container instanceof Container),
     );
     assertEquals(cronJob.toJSON(), fullDefinedJobInfo);
+    assertEquals(cronJob.isSpawnedByCronJob(), false);
   });
 
   await step(
@@ -32,6 +35,7 @@ Deno.test("Job", async ({ step }) => {
     () => {
       const cronJob = Job.from(defaultContainerJobDefinition);
       assertEquals(cronJob.toJSON(), defaultContainerJobInfo);
+      assertEquals(cronJob.isSpawnedByCronJob(), false);
     },
   );
 
@@ -40,6 +44,7 @@ Deno.test("Job", async ({ step }) => {
     () => {
       const cronJob = Job.from(multipleContainerJobDefinition);
       assertEquals(cronJob.toJSON(), multipleContainerJobInfo);
+      assertEquals(cronJob.isSpawnedByCronJob(), false);
     },
   );
 
@@ -48,6 +53,16 @@ Deno.test("Job", async ({ step }) => {
     () => {
       const cronJob = Job.from(mixedDefinedContainerJobDefinition);
       assertEquals(cronJob.toJSON(), mixedDefinedContainersJobInfo);
+      assertEquals(cronJob.isSpawnedByCronJob(), false);
+    },
+  );
+
+  await step(
+    "Should parse recognize jobs spawned by cronjob",
+    () => {
+      const cronJob = Job.from(jobSpawnedByCronjobDefinition);
+      assertEquals(cronJob.toJSON(), jobSpawnedByCronjobInfo);
+      assertEquals(cronJob.isSpawnedByCronJob(), true);
     },
   );
 });

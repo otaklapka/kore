@@ -140,3 +140,8 @@ export const mixedDefinedContainersJobInfo: JobInfo = {
     limitsMemoryBytes: undefined,
   },
 };
+
+export const jobSpawnedByCronjobInfo: JobInfo = {
+  ...fullDefinedJobInfo,
+  name: "job-spawned-by-cronjob",
+};

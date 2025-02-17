@@ -5,6 +5,7 @@ import {
 } from "../cron_job/mod.ts";
 import {
   defaultContainerJobInfo,
+  jobSpawnedByCronjobInfo,
   multipleContainerJobInfo,
 } from "../job/mod.ts";
 import {

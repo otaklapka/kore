@@ -60,4 +60,8 @@ export class Job extends IntoResourceAccumulator implements ToJson {
       },
     };
   }
+
+  public isSpawnedByCronJob(): boolean {
+    return this.metadata.hasOwnerReferences();
+  }
 }

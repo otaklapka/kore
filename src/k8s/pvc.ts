@@ -23,8 +23,15 @@ export class Pvc extends IntoResourceAccumulator implements ToJson {
   constructor(
     public readonly metadata: Metadata,
     public readonly requests: PvcResourceDefinition,
+    private readonly isBoundByConroller: boolean = false,
   ) {
     super();
+  }
+
+  public isBoundByController(): boolean {
+    return !!this.metadata.getAnnotation(
+      "pv.kubernetes.io/bound-by-controller",
+    );
   }
 
   protected getContainers(): Container[] {

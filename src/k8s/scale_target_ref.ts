@@ -1,12 +1,12 @@
 import { Scalable } from "./scalable.ts";
 import { z } from "zod";
-import { Kind } from "../types.ts";
 
 export const scaleTargetRefSchema = z.object({
-  kind: z.enum([Kind.Deployment, Kind.StatefulSet]),
+  kind: z.string(),
   name: z.string(),
 });
 
+// TODO: rename just to TargetRef
 export class ScaleTargetRef {
   constructor(
     public readonly kind: string,
