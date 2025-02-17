@@ -61,6 +61,9 @@ const run = async (options: CliOptions, ...args: string[]): Promise<void> => {
 
   const koreOptions: KoreOptions = {
     verbose: options.verbose,
+    abbreviateNames: options.abbreviateNames === true
+      ? 30
+      : options.abbreviateNames,
   };
 
   const kore = new Kore(docs, koreOptions);
@@ -70,7 +73,7 @@ const run = async (options: CliOptions, ...args: string[]): Promise<void> => {
       console.log(JSON.stringify(kore.toJSON()));
       break;
     default:
-      new KoreTable(kore.toJSON()).printTable();
+      new KoreTable(kore.toJSON(), koreOptions).printTable();
       break;
   }
 };
@@ -86,6 +89,10 @@ await new Command()
     default: Output.Table,
   })
   .option("-v, --verbose", "Enable verbose output")
+  .option(
+    "-a, --abbreviate-names [abbreviate-names:integer]",
+    "Abbreviate object names in table to length, default 30",
+  )
   .arguments("[files...]")
   .action((options: CliOptions, ...args: string[]) => run(options, ...args))
   .parse(Deno.args);

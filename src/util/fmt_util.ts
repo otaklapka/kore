@@ -18,4 +18,12 @@ export class FmtUtil {
       ? UnitUtil.cpuMilisToHuman(millis)
       : placeholder;
   }
+
+  static shortenName(name: string, length: number): string {
+    if (name.length <= length) {
+      return name;
+    }
+    const side = Math.trunc(length / 2);
+    return `${name.slice(0, side)}...${name.slice(-side)}`;
+  }
 }

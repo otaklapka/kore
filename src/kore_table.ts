@@ -4,6 +4,7 @@ import {
   JobInfo,
   Kind,
   KoreInfo,
+  KoreOptions,
   PvcInfo,
   StatefulSetInfo,
 } from "./types.ts";
@@ -11,7 +12,10 @@ import { FmtUtil } from "./util/fmt_util.ts";
 import { RowType, Table } from "@cliffy/table";
 import { bold, dim } from "@std/fmt/colors";
 export class KoreTable {
-  constructor(private readonly info: KoreInfo) {}
+  constructor(
+    private readonly info: KoreInfo,
+    private readonly options: Pick<KoreOptions, "abbreviateNames">,
+  ) {}
 
   public printTable(): void {
     const table = new Table()
@@ -70,7 +74,7 @@ export class KoreTable {
   private deploymentInfoIntoTableRow(obj: DeploymentInfo): RowType[] {
     return [
       [
-        obj.name,
+        this.formatObjectNameByOptions(obj.name),
         obj.kind,
         obj.minReplicas !== obj.maxReplicas
           ? `${obj.minReplicas}→${obj.maxReplicas}`
@@ -90,7 +94,7 @@ export class KoreTable {
   private jobInfoIntoTableRow(obj: JobInfo): RowType[] {
     return [
       [
-        obj.name,
+        this.formatObjectNameByOptions(obj.name),
         obj.kind,
         1,
         FmtUtil.fmtCpuMillis(obj.resourcesSum.requestsCpuMillis),
@@ -108,7 +112,7 @@ export class KoreTable {
   private statefulSetInfoIntoTableRow(obj: StatefulSetInfo): RowType[] {
     return [
       [
-        obj.name,
+        this.formatObjectNameByOptions(obj.name),
         obj.kind,
         obj.minReplicas !== obj.maxReplicas
           ? `${obj.minReplicas}→${obj.maxReplicas}`
@@ -128,7 +132,7 @@ export class KoreTable {
 
   private containerInfoIntoTableRow(obj: ContainerInfo): RowType {
     return [
-      `  ${obj.name}`,
+      `  ${this.formatObjectNameByOptions(obj.name)}`,
       "Container",
       "",
       FmtUtil.fmtCpuMillis(obj.requests.cpuMillis),
@@ -144,7 +148,9 @@ export class KoreTable {
       obj.resourcesSum.requestsStorageBytes,
     );
     return [
-      nested ? `  ${obj.name}` : obj.name,
+      nested
+        ? `  ${this.formatObjectNameByOptions(obj.name)}`
+        : this.formatObjectNameByOptions(obj.name),
       obj.kind,
       "",
       "",
@@ -153,5 +159,11 @@ export class KoreTable {
       "",
       storageBytesFmtdVal,
     ].map((val) => nested ? dim(val) : val);
+  }
+
+  private formatObjectNameByOptions(name: string): string {
+    return this.options?.abbreviateNames && this.options?.abbreviateNames > 0
+      ? FmtUtil.shortenName(name, this.options.abbreviateNames)
+      : name;
   }
 }

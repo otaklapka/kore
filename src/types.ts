@@ -12,12 +12,14 @@ export enum Output {
 }
 
 export type CliOptions = {
-  verbose?: boolean | undefined;
+  verbose?: boolean;
   output: Output;
+  abbreviateNames?: number | true;
 };
 
 export type KoreOptions = {
   verbose?: boolean;
+  abbreviateNames?: number;
 };
 
 export type KubeObject = Deployment | StatefulSet | CronJob | Job | Pvc | Hpa;
